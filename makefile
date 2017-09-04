@@ -15,7 +15,7 @@ BISON_SRC = src/grammar.y
 
 OBJ_FILES = ${CPP_SRC:src/%.cpp=obj/%.o}
 
-TARGET = bin/tinyc
+TARGET = bin/mmc
 
 .PHONY: clean
 
