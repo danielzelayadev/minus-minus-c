@@ -4,7 +4,7 @@
 using namespace std;
 
 extern FILE* yyin;
-int yylex();
+int yyparse();
 
 int main(int argc, char **argv) {
 
@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    while(yylex());
+    yyparse();
 
     return 0;
 }
