@@ -12,6 +12,8 @@
 %}
 
 DIGIT [0-9]
+OCT [0-7]
+HEX [0-9a-fA-F]
 LETTER [a-zA-Z_]
 IGNORE [ \n\t\v\f]
 
@@ -77,7 +79,12 @@ IGNORE [ \n\t\v\f]
 "?" { count(); return '?'; }
 
 
-{LETTER}({LETTER}|{DIGIT})* { printf("%s\n", yytext); }
+{LETTER}({LETTER}|{DIGIT})* { return ID; }
+
+
+0[xX]{HEX}+       { return HEX_INT; }
+0{OCT}+           { return OCT_INT; }
+(0|[1-9]{DIGIT}*) { return DEC_INT; }
 
 
 "("  { count(); return '('; }
