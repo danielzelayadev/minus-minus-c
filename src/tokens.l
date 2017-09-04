@@ -1,6 +1,9 @@
 %option noyywrap
 %option yylineno
 
+%x SINGLE_COMMENT
+%x MULTI_COMMENT
+
 %{
     #include <stdio.h>
     #include "tokens.h"
@@ -92,7 +95,8 @@ IGNORE [ \n\t\v\f]
 \"(\\.|[^\\"])*\" { count(); return STRING_LIT; }
 
 
-"//".*\n { count(); }
+"//" { BEGIN(SINGLE_COMMENT); }
+"/*" { BEGIN(MULTI_COMMENT); }
 
 
 "("  { count(); return '('; }
@@ -109,7 +113,17 @@ IGNORE [ \n\t\v\f]
 {IGNORE} { count(); }
 
 
-. { printf("Lexer Error[%d:%d]: %s\n", yylineno, column + 1, yytext); }
+. { count(); printf("Lexer Error[%d:%d]: %s\n", yylineno, column + 1, yytext); }
+
+<SINGLE_COMMENT>[^\n] { count(); }
+<SINGLE_COMMENT>\n { count(); BEGIN(INITIAL); }
+
+<MULTI_COMMENT><<EOF>> { 
+    printf("Lexer Error[%d:%d]: You must close the multiline comment.\n", yylineno, column + 1); 
+    yyterminate();
+}
+<MULTI_COMMENT>.|\n { count(); }
+<MULTI_COMMENT>"*/" { count(); BEGIN(INITIAL); }
 
 %%
 
