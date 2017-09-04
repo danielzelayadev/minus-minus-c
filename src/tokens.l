@@ -36,7 +36,6 @@ IGNORE [ \n\t\v\f]
 
 "++" { count(); return OP_INCREMENT; }
 "--" { count(); return OP_DECREMENT; }
-"!"  { count(); return '!'; }
 
 "+"  { count(); return '+'; }
 "-"  { count(); return '-'; }
@@ -79,12 +78,16 @@ IGNORE [ \n\t\v\f]
 "?" { count(); return '?'; }
 
 
-{LETTER}({LETTER}|{DIGIT})* { return ID; }
+{LETTER}({LETTER}|{DIGIT})* { count(); return ID; }
 
 
-0[xX]{HEX}+       { return HEX_INT; }
-0{OCT}+           { return OCT_INT; }
-(0|[1-9]{DIGIT}*) { return DEC_INT; }
+0[xX]{HEX}+       { count(); return HEX_INT; }
+0{OCT}+           { count(); return OCT_INT; }
+(0|[1-9]{DIGIT}*) { count(); return DEC_INT; }
+
+
+'(\\.|[^\\'])+'   { count(); return CHAR_LIT; }
+\"(\\.|[^\\"])*\" { count(); return STRING_LIT; }
 
 
 "("  { count(); return '('; }

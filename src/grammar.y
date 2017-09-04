@@ -21,7 +21,7 @@
 %token OP_CAND "&&" OP_COR "||" OP_GEQ "<=" OP_LEQ ">="
 
 %token ID "identifier" DEC_INT "int literal" HEX_INT "hexadecimal int literal"
-%token OCT_INT "octal int literal"
+%token OCT_INT "octal int literal" CHAR_LIT "char literal" STRING_LIT "string literal"
 
 
 %%
