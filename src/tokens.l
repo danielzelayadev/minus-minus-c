@@ -8,6 +8,8 @@
     extern char *yytext;
     extern int yylineno;
 
+    int column = 0;
+
     void count();
 %}
 
@@ -90,6 +92,9 @@ IGNORE [ \n\t\v\f]
 \"(\\.|[^\\"])*\" { count(); return STRING_LIT; }
 
 
+"//".*\n { count(); }
+
+
 "("  { count(); return '('; }
 ")"  { count(); return ')'; }
 "{"  { count(); return '{'; }
@@ -104,11 +109,9 @@ IGNORE [ \n\t\v\f]
 {IGNORE} { count(); }
 
 
-. { printf("Unknown at Line %d: %s\n", yylineno, yytext); }
+. { printf("Lexer Error[%d:%d]: %s\n", yylineno, column + 1, yytext); }
 
 %%
-
-int column = 0;
 
 void count() {
     int i;
