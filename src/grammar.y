@@ -260,9 +260,45 @@ cast_expression
 
 
 code_block
-	: '{' statement_list '}'
+	: '{' declaration_list statement_list '}'
+;
+
+declaration_list
+	: declaration_list declaration
+	| %empty
 ;
 
 statement_list
-	: %empty
+	: statement_list statement
+	| %empty
+;
+
+statement
+	: code_block
+	| expression_statement
+	| selection_statement
+	| iteration_statement
+	| jump_statement
+;
+
+expression_statement
+	: expression ';'
+;
+
+selection_statement
+	: KW_IF '(' expression ')' statement
+	| KW_IF '(' expression ')' statement KW_ELSE statement
+;
+
+iteration_statement
+	: KW_WHILE '(' expression ')' statement
+	| KW_FOR '(' expression_statement expression_statement ')' statement
+	| KW_FOR '(' expression_statement expression_statement expression ')' statement
+;
+
+jump_statement
+	: KW_CONTINUE ';'
+	| KW_BREAK ';'
+	| KW_RETURN ';'
+	| KW_RETURN expression ';'
 ;
