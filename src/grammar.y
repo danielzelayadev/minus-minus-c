@@ -35,66 +35,157 @@
 
 compilation_unit
 	: compilation_unit global_declaration
-	| global_declaration;
+	| global_declaration
+;
 
 global_declaration
 	: function_definition
-	| variable_declaration ';';
+	| variable_declaration ';'
+;
 
 
 
 function_definition
-	: function_prototype optional_function_body;
+	: function_prototype optional_function_body
+;
 
 function_prototype
-	: data_type ID '(' optional_parameter_list ')';
+	: data_type ID '(' optional_parameter_list ')'
+;
 
 optional_function_body
 	: code_block
-	| ';';
+	| ';'
+;
 
 optional_parameter_list
 	: parameter_list
-	| %empty;
+	| %empty
+;
 
 parameter_list
 	: parameter_list ',' data_type ID
-	| data_type ID;
+	| data_type ID
+;
 
 
 
 variable_declaration
-	: data_type declaration_list;
+	: data_type declaration_list
+	;
 
 declaration_list
 	: declaration_list ',' ID optional_initializer
-	| ID;
+	| ID
+;
 
 optional_initializer
 	: initializer
-	| %empty;
+	| %empty
+;
 
 initializer
-	: '=' expression;
+	: '=' expression
+;
 
 
 
 data_type
 	: KW_CHAR optional_pointer
 	| KW_INT optional_pointer
-	| KW_VOID optional_pointer;
+	| KW_VOID optional_pointer
+;
 
 optional_pointer
 	: '*'
-	| %empty;
+	| %empty
+;
 
 
 
 expression
-	: %empty;
+	: assignment_expression
+;
+
+assignment_expression
+	: unary_expression assignment_operator assignment_expression
+	| conditional_expression
+;
+
+conditional_expression
+	: cor_expression '?' expression ':' conditional_expression
+	| cor_expression
+;
+
+cor_expression
+	: cor_expression OP_COR and_expression
+	| cand_expression
+;
+
+cand_expression
+	: cand_expression OP_CAND or_expression
+	| or_expression
+;
+
+or_expression
+	: or_expression '|' xor_expression
+	| xor_expression
+;
+
+xor_expression
+	: xor_expression '^' and_expression
+	| and_expression
+;
+
+and_expression
+	: and_expression '&' equality_expression
+	| equality_expression
+;
+
+equality_expression
+	: equality_expression OP_EQ relational_expression
+	| equality_expression OP_NOTEQ relational_expression
+	| relational_expression
+;
+
+relational_expression
+	: relational_expression '>' shift_expression
+	| relational_expression '<' shift_expression
+	| relational_expression OP_GEQ shift_expression
+	| relational_expression OP_LEQ shift_expression
+	| shift_expression
+;
+
+shift_expression
+	: shift_expression OP_SRL additive_expression
+	| shift_expression OP_SLL additive_expression
+	| additive_expression
+;
+
+additive_expression
+	: additive_expression '+' multiplicative_expression
+	| additive_expression '-' multiplicative_expression
+	| multiplicative_expression
+;
+
+multiplicative_expression
+	: multiplicative_expression '*' cast_expression
+	| multiplicative_expression '/' cast_expression
+	| multiplicative_expression '%' cast_expression
+	| cast_expression
+;
+
+cast_expression
+	: '(' type_name ')' cast_expression
+	| unary_expression
+;
+
+
 
 code_block
-	: '{' statement_list '}';
+	: '{' statement_list '}'
+;
 
 statement_list
-	: %empty;
+	: %empty
+;
