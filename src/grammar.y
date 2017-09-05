@@ -40,65 +40,110 @@ compilation_unit
 
 global_declaration
 	: function_definition
-	| variable_declaration ';'
+	| declaration
 ;
 
 
 
 function_definition
-	: function_prototype optional_function_body
-;
-
-function_prototype
-	: data_type ID '(' optional_parameter_list ')'
-;
-
-optional_function_body
-	: code_block
-	| ';'
-;
-
-optional_parameter_list
-	: parameter_list
-	| %empty
-;
-
-parameter_list
-	: parameter_list ',' data_type ID
-	| data_type ID
+	: data_type declarator code_block
+	| declarator code_block
 ;
 
 
 
-variable_declaration
-	: data_type declaration_list
-	;
+declaration
+	: data_type ';'
+	| data_type init_declarator_list ';'
+;
 
-declaration_list
-	: declaration_list ',' ID optional_initializer
+init_declarator_list
+	: init_declarator_list ',' init_declarator
+	| init_declarator
+;
+
+init_declarator
+	: declarator '=' initializer
+	| declarator
+;
+
+declarator
+	: '*' direct_declarator
+	| direct_declarator
+;
+
+direct_declarator
+	: ID '[' constant_expression ']'
+	| ID '[' ']'
+	| ID '(' parameter_list ')'
+	| ID '(' ')'
 	| ID
 ;
 
-optional_initializer
-	: initializer
-	| %empty
+initializer
+	: assignment_expression
+	| '{' initializer_list '}'
+	| '{' init_declarator ',' '}'
 ;
 
-initializer
-	: '=' expression
+initializer_list
+	: initializer_list ',' initializer
+	| initializer
+;
+
+parameter_list
+	: parameter_list ',' parameter_declaration
+	| parameter_declaration
+;
+
+parameter_declaration
+	: data_type declarator
+	| data_type
 ;
 
 
 
 data_type
-	: KW_CHAR optional_pointer
-	| KW_INT optional_pointer
-	| KW_VOID optional_pointer
+	: KW_CHAR
+	| KW_INT
+	| KW_VOID
 ;
 
-optional_pointer
-	: '*'
-	| %empty
+type_name
+	: data_type '*'
+	| data_type
+;
+
+
+
+argument_list
+	: argument_list ',' expression
+	| expression
+;
+
+
+
+unary_operator
+	: '+'
+	| '-'
+	| '*'
+	| '~'
+	| '&'
+	| '!'
+;
+
+assignment_operator
+	: '='
+	| OP_PLUSEQ
+	| OP_MINUSEQ
+	| OP_TIMESEQ
+	| OP_DIVEQ
+	| OP_MODEQ
+	| OP_ANDEQ
+	| OP_OREQ
+	| OP_XOREQ
+	| OP_SLLEQ
+	| OP_SRLEQ
 ;
 
 
@@ -107,9 +152,41 @@ expression
 	: assignment_expression
 ;
 
+constant_expression
+	: conditional_expression
+;
+
 assignment_expression
 	: unary_expression assignment_operator assignment_expression
 	| conditional_expression
+;
+
+unary_expression
+	: OP_INCREMENT unary_expression
+	| OP_DECREMENT unary_expression
+	| unary_operator cast_expression
+	| KW_SIZEOF unary_expression
+	| KW_SIZEOF '(' type_name ')'
+	| postfix_expression
+;
+
+postfix_expression
+	: postfix_expression '[' expression ']'
+	| postfix_expression '(' ')'
+	| postfix_expression '(' argument_list ')'
+	| postfix_expression OP_INCREMENT
+	| postfix_expression OP_DECREMENT
+	| primary_expression
+;
+
+primary_expression
+	: ID
+	| DEC_INT
+	| OCT_INT
+	| HEX_INT
+	| CHAR_LIT
+	| STRING_LIT
+	| '(' expression ')'
 ;
 
 conditional_expression
