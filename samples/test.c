@@ -1,4 +1,5 @@
 int func(int argc, char *argv) {
-    // int x = 10;
-    return 0;
+    // return 0;
 }
+
+int x, y = , z ,zz;

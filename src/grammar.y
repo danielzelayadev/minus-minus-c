@@ -38,40 +38,60 @@ compilation_unit
 	| global_declaration;
 
 global_declaration
-	: function_definition;
+	: function_definition
+	| variable_declaration ';';
+
+
 
 function_definition
 	: function_prototype optional_function_body;
 
 function_prototype
-	: data_type ID '(' parameter_list ')';
+	: data_type ID '(' optional_parameter_list ')';
+
+optional_function_body
+	: code_block
+	| ';';
+
+optional_parameter_list
+	: parameter_list
+	| %empty;
+
+parameter_list
+	: parameter_list ',' data_type ID
+	| data_type ID;
+
+
+
+variable_declaration
+	: data_type declaration_list;
+
+declaration_list
+	: declaration_list ',' ID optional_initializer
+	| ID;
+
+optional_initializer
+	: initializer
+	| %empty;
+
+initializer
+	: '=' expression;
+
+
 
 data_type
-	: var_type
-	| KW_VOID;
-
-var_type
-	: KW_INT optional_pointer
-	| KW_CHAR optional_pointer;
+	: KW_CHAR optional_pointer
+	| KW_INT optional_pointer
+	| KW_VOID optional_pointer;
 
 optional_pointer
 	: '*'
 	| %empty;
 
-parameter_list
-	: var_dec_list
-	| %empty;
 
-var_dec_list
-	: var_dec_list ',' var_dec
-	| var_dec;
 
-var_dec
-	: var_type ID;
-
-optional_function_body
-	: code_block
-	| ';';
+expression
+	: %empty;
 
 code_block
 	: '{' statement_list '}';
