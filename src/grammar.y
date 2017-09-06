@@ -1,6 +1,6 @@
 %{
     #include <stdio.h>
-    
+
 	int yylex();
 
 	extern int yylineno, column;
@@ -83,7 +83,7 @@ direct_declarator
 initializer
 	: assignment_expression
 	| '{' initializer_list '}'
-	| '{' init_declarator ',' '}'
+	| '{' initializer_list ',' '}'
 ;
 
 initializer_list
