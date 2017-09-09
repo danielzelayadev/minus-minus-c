@@ -4,3 +4,5 @@ debug
 src/lexer.cpp
 src/parser.cpp
 src/tokens.h
+.vscode
+*.txt
