@@ -56,7 +56,7 @@ public:
     DataType dataType;
     vector<InitDeclarator*>* initDecList;
 
-    Declaration(DataType, vector<InitDeclarator*>* ls = 0);
+    Declaration(DataType, vector<InitDeclarator*>* = 0);
 };
 
 
@@ -68,21 +68,21 @@ public:
     string id;
     bool isPointer;
 
-    Declarator(string, bool);
+    Declarator(string);
 };
 
 class ArrayDeclarator : public Declarator {
 public:
-    int dimensions;
+    Expression *dimExpr;
 
-    ArrayDeclarator(string, bool, int);
+    ArrayDeclarator(string, Expression*);
 };
 
 class FunctionDeclarator : public Declarator {
 public:
     vector<Parameter*>* params;
     
-    FunctionDeclarator(string, bool, vector<Parameter*>*);
+    FunctionDeclarator(string, vector<Parameter*>*);
 };
 
 class InitDeclarator : public ASTNode {

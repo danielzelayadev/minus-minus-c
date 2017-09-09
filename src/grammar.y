@@ -24,23 +24,36 @@
 %union {
 	CompilationUnit* c_unit;
 	GlobalDeclaration* gdec_t;
+
 	Declarator* declr_t;
+
 	InitDeclarator* ideclr_t;
 	vector<InitDeclarator*>* ideclr_ls;
+
 	Initializer* inlzr_t;
+	vector<Initializer*>* inlzr_ls;
+
+	Parameter* par_t;
+	vector<Parameter*>* par_ls;
+
 	DataType dt;
+
 	int int_t;
+
 	char char_t;
 	char* char_ptr;
 }
 
 %type<c_unit>       compilation_unit
 %type<gdec_t>       global_declaration function_definition declaration
-%type<declr_t>      declarator
+%type<declr_t>      declarator direct_declarator
 %type<dt>           data_type
 %type<ideclr_ls>    init_declarator_list
 %type<ideclr_t>     init_declarator
 %type<inlzr_t>      initializer
+%type<inlzr_ls>     initializer_list
+%type<par_t>        parameter_declaration
+%type<par_ls>       parameter_list
 
 %token KW_INT "int" KW_CHAR "char" KW_VOID "void"
 %token KW_FOR "for" KW_WHILE "while" KW_IF "if" KW_ELSE "else"
@@ -92,50 +105,50 @@ init_declarator_list
 ;
 
 init_declarator
-	: declarator '=' initializer
-	| declarator
+	: declarator '=' initializer { $$ = new InitDeclarator($1, $3); }
+	| declarator { $$ = new InitDeclarator($1, 0); }
 ;
 
 declarator
-	: '*' direct_declarator
-	| direct_declarator
+	: '*' direct_declarator { $2->isPointer = true; $$ = (Declarator*)$2; }
+	| direct_declarator { $$ = $1; }
 ;
 
 direct_declarator
-	: ID '[' constant_expression ']'
-	| ID '[' ']'
-	| ID '(' parameter_list ')'
-	| ID '(' ')'
-	| ID
+	: ID '[' constant_expression ']' { $$ = new ArrayDeclarator($1, $3); }
+	| ID '[' ']' { $$ = new ArrayDeclarator($1, 0); }
+	| ID '(' parameter_list ')' { $$ = new FunctionDeclarator($1, $3); }
+	| ID '(' ')' { $$ = new FunctionDeclarator($1, new vector<Parameter*>()); }
+	| ID { $$ = new Declarator($1); }
 ;
 
 initializer
-	: assignment_expression
-	| '{' initializer_list '}'
-	| '{' initializer_list ',' '}'
+	: assignment_expression { $$ = new VarInitializer($1); }
+	| '{' initializer_list '}' { $$ = new ArrayInitializer($2); }
+	| '{' initializer_list ',' '}' { $$ = new ArrayInitializer($2); }
 ;
 
 initializer_list
-	: initializer_list ',' assignment_expression
-	| assignment_expression
+	: initializer_list ',' assignment_expression { $1->push_back($3); $$ = $1; }
+	| assignment_expression { $$ = new vector<Initializer*>(); $$->push_back($1); }
 ;
 
 parameter_list
-	: parameter_list ',' parameter_declaration
-	| parameter_declaration
+	: parameter_list ',' parameter_declaration { $1->push_back($3); $$ = $1; }
+	| parameter_declaration { $$ = new vector<Parameter*>(); $$->push_back($1); }
 ;
 
 parameter_declaration
-	: data_type declarator
-	| data_type
+	: data_type declarator { $$ = new Parameter($1, $2); }
+	| data_type { $$ = new Parameter($1, 0); }
 ;
 
 
 
 data_type
-	: KW_CHAR
-	| KW_INT
-	| KW_VOID
+	: KW_CHAR { $$ = CHAR; }
+	| KW_INT  { $$ = INT; }
+	| KW_VOID { $$ = VOID; }
 ;
 
 type_name

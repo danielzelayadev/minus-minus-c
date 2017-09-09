@@ -21,16 +21,16 @@ Declaration::Declaration(DataType dataType, vector<InitDeclarator*>*initDecList)
     this->initDecList = initDecList;
 }
 
-Declarator::Declarator(string id, bool isPointer) {
+Declarator::Declarator(string id) {
     this->id = id;
-    this->isPointer = isPointer;
+    this->isPointer = false;
 }
 
-ArrayDeclarator::ArrayDeclarator(string id, bool isPointer, int dims) : Declarator(id, isPointer) {
-    this->dimensions = dims;
+ArrayDeclarator::ArrayDeclarator(string id, Expression* dimExpr) : Declarator(id) {
+    this->dimExpr = dimExpr;
 }
 
-FunctionDeclarator::FunctionDeclarator(string id, bool isPointer, vector<Parameter*>* params) : Declarator(id, isPointer) {
+FunctionDeclarator::FunctionDeclarator(string id, vector<Parameter*>* params) : Declarator(id) {
     this->params = params;
 }
 
