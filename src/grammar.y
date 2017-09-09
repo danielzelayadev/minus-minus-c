@@ -1,7 +1,14 @@
+%code requires {
+	#include "ast.h"
+}
+
 %{
     #include <stdio.h>
+	#include "ast.h"
 
 	int yylex();
+
+	CompilationUnit* ast;
 
 	extern int yylineno, column;
 	extern char *yytext;
@@ -14,6 +21,27 @@
 	#define YYERROR_VERBOSE 1
 %}
 
+%union {
+	CompilationUnit* c_unit;
+	GlobalDeclaration* gdec_t;
+	Declarator* declr_t;
+	InitDeclarator* ideclr_t;
+	vector<InitDeclarator*>* ideclr_ls;
+	Initializer* inlzr_t;
+	DataType dt;
+	int int_t;
+	char char_t;
+	char* char_ptr;
+}
+
+%type<c_unit>       compilation_unit
+%type<gdec_t>       global_declaration function_definition declaration
+%type<declr_t>      declarator
+%type<dt>           data_type
+%type<ideclr_ls>    init_declarator_list
+%type<ideclr_t>     init_declarator
+%type<inlzr_t>      initializer
+
 %token KW_INT "int" KW_CHAR "char" KW_VOID "void"
 %token KW_FOR "for" KW_WHILE "while" KW_IF "if" KW_ELSE "else"
 %token KW_BREAK "break" KW_CONTINUE "continue" KW_RETURN "return"
@@ -25,8 +53,9 @@
 %token OP_EQ "==" OP_NOTEQ "!=" OP_SRL ">>" OP_SLL "<<"
 %token OP_CAND "&&" OP_COR "||" OP_GEQ "<=" OP_LEQ ">="
 
-%token ID "identifier" DEC_INT "int literal" HEX_INT "hexadecimal int literal"
-%token OCT_INT "octal int literal" CHAR_LIT "char literal" STRING_LIT "string literal"
+%token<char_ptr> ID "identifier" STRING_LIT "string literal"
+%token<int_t> DEC_INT "int literal" HEX_INT "hexadecimal int literal" OCT_INT "octal int literal" 
+%token<char_t> CHAR_LIT "char literal"
 
 
 %start compilation_unit
@@ -34,32 +63,32 @@
 %%
 
 compilation_unit
-	: compilation_unit global_declaration
-	| global_declaration
+	: compilation_unit global_declaration { $1->globalDecs->push_back($2); $$ = ast = $1; }
+	| global_declaration { $$ = new CompilationUnit(); $$->globalDecs->push_back($1); }
 ;
 
 global_declaration
-	: function_definition
-	| declaration
+	: function_definition { $$ = $1; }
+	| declaration { $$ = $1; }
 ;
 
 
 
 function_definition
-	: data_type declarator code_block
-	| declarator code_block
+	: data_type declarator code_block { $$ = new FunctionDefinition($1, (FunctionDeclarator*)$2, 0); }
+	| declarator code_block { $$ = new FunctionDefinition((FunctionDeclarator*)$1, 0); }
 ;
 
 
 
 declaration
-	: data_type ';'
-	| data_type init_declarator_list ';'
+	: data_type ';' { $$ = new Declaration($1); }
+	| data_type init_declarator_list ';' { $$ = new Declaration($1, $2); }
 ;
 
 init_declarator_list
-	: init_declarator_list ',' init_declarator
-	| init_declarator
+	: init_declarator_list ',' init_declarator { $1->push_back($3); $$ = $1; }
+	| init_declarator { $$ = new vector<InitDeclarator*>(); $$->push_back($1); }
 ;
 
 init_declarator
@@ -87,8 +116,8 @@ initializer
 ;
 
 initializer_list
-	: initializer_list ',' initializer
-	| initializer
+	: initializer_list ',' assignment_expression
+	| assignment_expression
 ;
 
 parameter_list

@@ -1,7 +1,10 @@
 #include <iostream>
 #include <stdio.h>
+#include "ast.h"
 
 using namespace std;
+
+extern CompilationUnit* ast;
 
 extern FILE* yyin;
 int yyparse();
@@ -21,6 +24,8 @@ int main(int argc, char **argv) {
     }
 
     yyparse();
+
+    cout << ast->toString() << endl;
 
     return 0;
 }
