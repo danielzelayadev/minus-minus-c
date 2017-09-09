@@ -1,8 +1,8 @@
 %code requires {
-	#include "ast.h"
 	#include "unary-expr.h"
 	#include "binary-expr.h"
 	#include "postfix-expr.h"
+	#include "primary-expr.h"
 }
 
 %{
@@ -44,9 +44,6 @@
 	Expression* expr_t;
 	vector<Expression*>* expr_ls;
 
-	int int_t;
-
-	char char_t;
 	char* char_ptr;
 }
 
@@ -65,7 +62,7 @@
 %type<expr_t>       unary_expression cor_expression cand_expression conditional_expression 
 %type<expr_t>       xor_expression or_expression and_expression equality_expression relational_expression 
 %type<expr_t>       shift_expression additive_expression multiplicative_expression cast_expression
-%type<expr_t>       postfix_expression
+%type<expr_t>       postfix_expression primary_expression
 
 %token KW_INT "int" KW_CHAR "char" KW_VOID "void"
 %token KW_FOR "for" KW_WHILE "while" KW_IF "if" KW_ELSE "else"
@@ -79,8 +76,8 @@
 %token OP_CAND "&&" OP_COR "||" OP_GEQ "<=" OP_LEQ ">="
 
 %token<char_ptr> ID "identifier" STRING_LIT "string literal"
-%token<int_t> DEC_INT "int literal" HEX_INT "hexadecimal int literal" OCT_INT "octal int literal" 
-%token<char_t> CHAR_LIT "char literal"
+%token<char_ptr> DEC_INT "int literal" HEX_INT "hexadecimal int literal" OCT_INT "octal int literal" 
+%token<char_ptr> CHAR_LIT "char literal"
 
 
 %start compilation_unit
@@ -234,13 +231,13 @@ postfix_expression
 ;
 
 primary_expression
-	: ID
-	| DEC_INT
-	| OCT_INT
-	| HEX_INT
-	| CHAR_LIT
-	| STRING_LIT
-	| '(' expression ')'
+	: ID                 { $$ = new IdExpression($1); }
+	| DEC_INT            { $$ = new IntExpression($1); }
+	| OCT_INT            { $$ = new IntExpression($1); }
+	| HEX_INT            { $$ = new IntExpression($1); }
+	| CHAR_LIT           { $$ = new CharExpression($1); }
+	| STRING_LIT         { $$ = new StringExpression($1); }
+	| '(' expression ')' { $$ = $2; }
 ;
 
 conditional_expression
