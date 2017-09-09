@@ -1,5 +1,6 @@
 %code requires {
 	#include "ast.h"
+	#include "unary-expr.h"
 	#include "binary-expr.h"
 }
 
@@ -37,6 +38,7 @@
 	vector<Parameter*>* par_ls;
 
 	DataType dt;
+	UnaryOp  uo;
 
 	Expression* expr_t;
 	vector<Expression*>* expr_ls;
@@ -51,6 +53,7 @@
 %type<gdec_t>       global_declaration function_definition declaration
 %type<declr_t>      declarator direct_declarator
 %type<dt>           data_type type_name
+%type<uo>           unary_operator
 %type<ideclr_ls>    init_declarator_list
 %type<ideclr_t>     init_declarator
 %type<inlzr_t>      initializer
@@ -173,12 +176,12 @@ argument_list
 
 
 unary_operator
-	: '+'
-	| '-'
-	| '*'
-	| '~'
-	| '&'
-	| '!'
+	: '+' { $$ = IDENTITY; }
+	| '-' { $$ = NUM_NEG; }
+	| '*' { $$ = DEREF; }
+	| '~' { $$ = BIT_COMPLEMENT; }
+	| '&' { $$ = ADDRESSOF; }
+	| '!' { $$ = LOG_NEG; }
 ;
 
 assignment_operator
@@ -211,11 +214,11 @@ assignment_expression
 ;
 
 unary_expression
-	: OP_INCREMENT unary_expression
-	| OP_DECREMENT unary_expression
-	| unary_operator cast_expression
-	| KW_SIZEOF unary_expression
-	| KW_SIZEOF '(' type_name ')'
+	: OP_INCREMENT unary_expression  { $$ = new PreIncrementExpression($2); }
+	| OP_DECREMENT unary_expression  { $$ = new PreDecrementExpression($2); }
+	| unary_operator cast_expression { $$ = getUnaryInstance($1, $2); }
+	| KW_SIZEOF unary_expression     { $$ = new SizeofExpression($2); }
+	| KW_SIZEOF '(' type_name ')'    { $$ = new SizeofExpression($3); }
 	| postfix_expression
 ;
 
