@@ -50,6 +50,8 @@ public:
 
     FunctionDefinition(DataType returnType, FunctionDeclarator* declarator, CodeBlock* cb);
     FunctionDefinition(FunctionDeclarator* declarator, CodeBlock* cb);
+
+    string toString();
 };
 
 class Declaration : public GlobalDeclaration {
@@ -58,18 +60,22 @@ public:
     vector<InitDeclarator*>* initDecList;
 
     Declaration(DataType, vector<InitDeclarator*>* = 0);
+
+    string toString();
 };
 
 
 
 
 
-class Declarator : ASTNode {
+class Declarator : public ASTNode {
 public:
     string id;
     bool isPointer;
 
     Declarator(string);
+
+    string toString();
 };
 
 class ArrayDeclarator : public Declarator {
@@ -77,6 +83,8 @@ public:
     Expression *dimExpr;
 
     ArrayDeclarator(string, Expression*);
+
+    string toString();
 };
 
 class FunctionDeclarator : public Declarator {
@@ -84,6 +92,8 @@ public:
     vector<Parameter*>* params;
     
     FunctionDeclarator(string, vector<Parameter*>*);
+
+    string toString();
 };
 
 class InitDeclarator : public ASTNode {
@@ -92,6 +102,8 @@ public:
     Initializer* initializer;
 
     InitDeclarator(Declarator*, Initializer*);
+
+    string toString();
 };
 
 
@@ -104,6 +116,7 @@ public:
     Expression* expr;
 
     VarInitializer(Expression*);
+    string toString();
 };
 
 class ArrayInitializer : public Initializer {
@@ -111,6 +124,7 @@ public:
     vector<Expression*>* exprList;
 
     ArrayInitializer(vector<Expression*>*);
+    string toString();
 };
 
 
@@ -124,6 +138,7 @@ public:
     Declarator* declarator;
 
     Parameter(DataType, Declarator*);
+    string toString();
 };
 
 #endif

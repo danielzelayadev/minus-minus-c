@@ -108,8 +108,8 @@ global_declaration
 
 
 function_definition
-	: data_type declarator code_block { $$ = new FunctionDefinition($1, (FunctionDeclarator*)$2, 0); }
-	| declarator code_block { $$ = new FunctionDefinition((FunctionDeclarator*)$1, 0); }
+	: data_type declarator code_block { $$ = new FunctionDefinition($1, (FunctionDeclarator*)$2, (CodeBlock*)$3); }
+	| declarator code_block { $$ = new FunctionDefinition((FunctionDeclarator*)$1, (CodeBlock*)$2); }
 ;
 
 
