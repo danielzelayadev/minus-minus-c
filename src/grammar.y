@@ -2,6 +2,7 @@
 	#include "ast.h"
 	#include "unary-expr.h"
 	#include "binary-expr.h"
+	#include "postfix-expr.h"
 }
 
 %{
@@ -57,13 +58,14 @@
 %type<ideclr_ls>    init_declarator_list
 %type<ideclr_t>     init_declarator
 %type<inlzr_t>      initializer
-%type<expr_ls>      initializer_list
+%type<expr_ls>      initializer_list argument_list
 %type<par_t>        parameter_declaration
 %type<par_ls>       parameter_list
 %type<expr_t>       expression constant_expression assignment_expression
 %type<expr_t>       unary_expression cor_expression cand_expression conditional_expression 
 %type<expr_t>       xor_expression or_expression and_expression equality_expression relational_expression 
 %type<expr_t>       shift_expression additive_expression multiplicative_expression cast_expression
+%type<expr_t>       postfix_expression
 
 %token KW_INT "int" KW_CHAR "char" KW_VOID "void"
 %token KW_FOR "for" KW_WHILE "while" KW_IF "if" KW_ELSE "else"
@@ -169,8 +171,8 @@ type_name
 
 
 argument_list
-	: argument_list ',' expression
-	| expression
+	: argument_list ',' expression { $1->push_back($3); $$ = $1; }
+	| expression { $$ = new vector<Expression*>(); $$->push_back($1); }
 ;
 
 
@@ -223,11 +225,11 @@ unary_expression
 ;
 
 postfix_expression
-	: postfix_expression '[' expression ']'
-	| postfix_expression '(' ')'
-	| postfix_expression '(' argument_list ')'
-	| postfix_expression OP_INCREMENT
-	| postfix_expression OP_DECREMENT
+	: postfix_expression '[' expression ']'    { $$ = new ArrayAccess($1, $3); }
+	| postfix_expression '(' ')'               { $$ = new FunctionCall($1, new vector<Expression*>()); }
+	| postfix_expression '(' argument_list ')' { $$ = new FunctionCall($1, $3); }
+	| postfix_expression OP_INCREMENT          { $$ = new PostIncrement($1); }
+	| postfix_expression OP_DECREMENT          { $$ = new PostDecrement($1); }
 	| primary_expression
 ;
 
