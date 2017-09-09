@@ -74,15 +74,16 @@
 %type<expr_t>       postfix_expression primary_expression
 %type<stmt_t>       statement code_block expression_statement selection_statement jump_statement iteration_statement
 %type<stmt_ls>      statement_list
+%type<char_ptr>     assignment_operator '='
 
 %token KW_INT "int" KW_CHAR "char" KW_VOID "void"
 %token KW_FOR "for" KW_WHILE "while" KW_IF "if" KW_ELSE "else"
 %token KW_BREAK "break" KW_CONTINUE "continue" KW_RETURN "return"
 %token KW_SIZEOF "sizeof"
 
-%token OP_INCREMENT "++" OP_DECREMENT "--" OP_PLUSEQ "+=" OP_MINUSEQ "-="
-%token OP_TIMESEQ "*=" OP_DIVEQ "/=" OP_MODEQ "%=" OP_ANDEQ "&=" OP_OREQ "|="
-%token OP_XOREQ "^=" OP_SRLEQ ">>=" OP_SLLEQ "<<="
+%token OP_INCREMENT "++" OP_DECREMENT "--"
+%token<char_ptr> OP_TIMESEQ "*=" OP_DIVEQ "/=" OP_MODEQ "%=" OP_ANDEQ "&=" OP_OREQ "|="
+%token<char_ptr> OP_XOREQ "^=" OP_SRLEQ ">>=" OP_SLLEQ "<<=" OP_PLUSEQ "+=" OP_MINUSEQ "-="
 %token OP_EQ "==" OP_NOTEQ "!=" OP_SRL ">>" OP_SLL "<<"
 %token OP_CAND "&&" OP_COR "||" OP_GEQ "<=" OP_LEQ ">="
 
@@ -219,13 +220,13 @@ constant_expression
 ;
 
 assignment_expression
-	: unary_expression assignment_operator assignment_expression { $$ = new AssignmentExpression($1, $3); }
+	: unary_expression assignment_operator assignment_expression { $$ = new AssignmentExpression($1, $3, $2); }
 	| conditional_expression { $$ = $1; }
 ;
 
 unary_expression
-	: OP_INCREMENT unary_expression  { $$ = new PreIncrementExpression($2); }
-	| OP_DECREMENT unary_expression  { $$ = new PreDecrementExpression($2); }
+	: OP_INCREMENT unary_expression  { $$ = new PreIncrementExpression($2, PRE_INC); }
+	| OP_DECREMENT unary_expression  { $$ = new PreDecrementExpression($2, PRE_DEC); }
 	| unary_operator cast_expression { $$ = getUnaryInstance($1, $2); }
 	| KW_SIZEOF unary_expression     { $$ = new SizeofExpression($2); }
 	| KW_SIZEOF '(' type_name ')'    { $$ = new SizeofExpression($3); }
@@ -257,60 +258,60 @@ conditional_expression
 ;
 
 cor_expression
-	: cor_expression OP_COR and_expression { $$ = new CondOrExpression($1, $3); }
+	: cor_expression OP_COR and_expression { $$ = new CondOrExpression($1, $3, "||"); }
 	| cand_expression
 ;
 
 cand_expression
-	: cand_expression OP_CAND or_expression { $$ = new CondAndExpression($1, $3); }
+	: cand_expression OP_CAND or_expression { $$ = new CondAndExpression($1, $3, "&&"); }
 	| or_expression
 ;
 
 or_expression
-	: or_expression '|' xor_expression { $$ = new OrExpression($1, $3); }
+	: or_expression '|' xor_expression { $$ = new OrExpression($1, $3, "|"); }
 	| xor_expression
 ;
 
 xor_expression
-	: xor_expression '^' and_expression { $$ = new XorExpression($1, $3); }
+	: xor_expression '^' and_expression { $$ = new XorExpression($1, $3, "^"); }
 	| and_expression
 ;
 
 and_expression
-	: and_expression '&' equality_expression { $$ = new AndExpression($1, $3); }
+	: and_expression '&' equality_expression { $$ = new AndExpression($1, $3, "&"); }
 	| equality_expression
 ;
 
 equality_expression
-	: equality_expression OP_EQ relational_expression    { $$ = new EqualsExpression($1, $3); }
-	| equality_expression OP_NOTEQ relational_expression { $$ = new NotEqualsExpression($1, $3); }
+	: equality_expression OP_EQ relational_expression    { $$ = new EqualsExpression($1, $3, "=="); }
+	| equality_expression OP_NOTEQ relational_expression { $$ = new NotEqualsExpression($1, $3, "!="); }
 	| relational_expression
 ;
 
 relational_expression
-	: relational_expression '>' shift_expression    { $$ = new GreaterThanExpression($1, $3); }
-	| relational_expression '<' shift_expression    { $$ = new LessThanExpression($1, $3); }
-	| relational_expression OP_GEQ shift_expression { $$ = new GteExpression($1, $3); }
-	| relational_expression OP_LEQ shift_expression { $$ = new LteExpression($1, $3); }
+	: relational_expression '>' shift_expression    { $$ = new GreaterThanExpression($1, $3, ">"); }
+	| relational_expression '<' shift_expression    { $$ = new LessThanExpression($1, $3, "<"); }
+	| relational_expression OP_GEQ shift_expression { $$ = new GteExpression($1, $3, ">="); }
+	| relational_expression OP_LEQ shift_expression { $$ = new LteExpression($1, $3, "<="); }
 	| shift_expression
 ;
 
 shift_expression
-	: shift_expression OP_SRL additive_expression { $$ = new ShiftRightExpression($1, $3); }
-	| shift_expression OP_SLL additive_expression { $$ = new ShiftLeftExpression($1, $3); }
+	: shift_expression OP_SRL additive_expression { $$ = new ShiftRightExpression($1, $3, ">>"); }
+	| shift_expression OP_SLL additive_expression { $$ = new ShiftLeftExpression($1, $3, "<<"); }
 	| additive_expression
 ;
 
 additive_expression
-	: additive_expression '+' multiplicative_expression { $$ = new SumExpression($1, $3); }
-	| additive_expression '-' multiplicative_expression { $$ = new SubExpression($1, $3); }
+	: additive_expression '+' multiplicative_expression { $$ = new SumExpression($1, $3, "+"); }
+	| additive_expression '-' multiplicative_expression { $$ = new SubExpression($1, $3, "-"); }
 	| multiplicative_expression
 ;
 
 multiplicative_expression
-	: multiplicative_expression '*' cast_expression { $$ = new MulExpression($1, $3); }
-	| multiplicative_expression '/' cast_expression { $$ = new DivExpression($1, $3); }
-	| multiplicative_expression '%' cast_expression { $$ = new ModExpression($1, $3); }
+	: multiplicative_expression '*' cast_expression { $$ = new MulExpression($1, $3, "*"); }
+	| multiplicative_expression '/' cast_expression { $$ = new DivExpression($1, $3, "/"); }
+	| multiplicative_expression '%' cast_expression { $$ = new ModExpression($1, $3, "%"); }
 	| cast_expression
 ;
 

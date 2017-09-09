@@ -6,14 +6,18 @@
 #define DEFINE_BINARY_EXPR(name) \
 class name##Expression : public BinaryExpression { \
 public:                                \
-    name##Expression(Expression *left, Expression *right) : BinaryExpression(left, right){} \
+    name##Expression(Expression *left, Expression *right, string op) : BinaryExpression(left, right, op){} \
+    string toString() {\
+        return left->toString() + " " + op + " " + right->toString();\
+    }\
 };
 
 class BinaryExpression : public Expression {
 public:
     Expression *left, *right;
+    string op;
 
-    BinaryExpression(Expression*, Expression*);
+    BinaryExpression(Expression*, Expression*, string op);
 };
 
 DEFINE_BINARY_EXPR(Assignment)

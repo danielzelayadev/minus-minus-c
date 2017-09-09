@@ -49,17 +49,17 @@ IGNORE [ \n\t\v\f]
 "/"  { count(); return '/'; }
 "%"  { count(); return '%'; }
 
-"="   { count(); return '='; }
-"+="  { count(); return OP_PLUSEQ; }
-"-="  { count(); return OP_MINUSEQ; }
-"*="  { count(); return OP_TIMESEQ; }
-"/="  { count(); return OP_DIVEQ; }
-"%="  { count(); return OP_MODEQ; }
-"&="  { count(); return OP_ANDEQ; }
-"|="  { count(); return OP_OREQ; }
-"^="  { count(); return OP_XOREQ; }
-">>=" { count(); return OP_SRLEQ; }
-"<<=" { count(); return OP_SLLEQ; }
+"="   { count(); yylval.char_ptr = strdup(yytext); return '='; }
+"+="  { count(); yylval.char_ptr = strdup(yytext); return OP_PLUSEQ; }
+"-="  { count(); yylval.char_ptr = strdup(yytext); return OP_MINUSEQ; }
+"*="  { count(); yylval.char_ptr = strdup(yytext); return OP_TIMESEQ; }
+"/="  { count(); yylval.char_ptr = strdup(yytext); return OP_DIVEQ; }
+"%="  { count(); yylval.char_ptr = strdup(yytext); return OP_MODEQ; }
+"&="  { count(); yylval.char_ptr = strdup(yytext); return OP_ANDEQ; }
+"|="  { count(); yylval.char_ptr = strdup(yytext); return OP_OREQ; }
+"^="  { count(); yylval.char_ptr = strdup(yytext); return OP_XOREQ; }
+">>=" { count(); yylval.char_ptr = strdup(yytext); return OP_SRLEQ; }
+"<<=" { count(); yylval.char_ptr = strdup(yytext); return OP_SLLEQ; }
 
 "==" { count(); return OP_EQ; }
 "!=" { count(); return OP_NOTEQ; }
