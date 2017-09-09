@@ -3,6 +3,7 @@
 	#include "binary-expr.h"
 	#include "postfix-expr.h"
 	#include "primary-expr.h"
+	#include "statements.h"
 }
 
 %{
@@ -30,6 +31,8 @@
 	CompilationUnit* c_unit;
 	GlobalDeclaration* gdec_t;
 
+	vector<Declaration*>* decl_ls;
+
 	Declarator* declr_t;
 
 	InitDeclarator* ideclr_t;
@@ -46,11 +49,15 @@
 	Expression* expr_t;
 	vector<Expression*>* expr_ls;
 
+	Statement* stmt_t;
+	vector<Statement*>* stmt_ls;
+
 	char* char_ptr;
 }
 
 %type<c_unit>       compilation_unit
 %type<gdec_t>       global_declaration function_definition declaration
+%type<decl_ls>      declaration_list
 %type<declr_t>      declarator direct_declarator
 %type<dt>           data_type type_name
 %type<uo>           unary_operator
@@ -65,6 +72,8 @@
 %type<expr_t>       xor_expression or_expression and_expression equality_expression relational_expression 
 %type<expr_t>       shift_expression additive_expression multiplicative_expression cast_expression
 %type<expr_t>       postfix_expression primary_expression
+%type<stmt_t>       statement code_block expression_statement selection_statement jump_statement iteration_statement
+%type<stmt_ls>      statement_list
 
 %token KW_INT "int" KW_CHAR "char" KW_VOID "void"
 %token KW_FOR "for" KW_WHILE "while" KW_IF "if" KW_ELSE "else"
@@ -313,17 +322,17 @@ cast_expression
 
 
 code_block
-	: '{' declaration_list statement_list '}'
+	: '{' declaration_list statement_list '}' { $$ = new CodeBlock($2, $3); }
 ;
 
 declaration_list
-	: declaration_list declaration
-	| %empty
+	: declaration_list declaration { $1->push_back((Declaration*)$2); $$ = $1; }
+	| %empty { $$ = new vector<Declaration*>(); }
 ;
 
 statement_list
-	: statement_list statement
-	| %empty
+	: statement_list statement { $1->push_back($2); $$ = $1; }
+	| %empty { $$ = new vector<Statement*>(); }
 ;
 
 statement
@@ -335,23 +344,23 @@ statement
 ;
 
 expression_statement
-	: expression ';'
+	: expression ';' { $$ = new ExpressionStatement($1); }
 ;
 
 selection_statement
-	: KW_IF '(' expression ')' statement
-	| KW_IF '(' expression ')' statement KW_ELSE statement
+	: KW_IF '(' expression ')' statement { $$ = new IfStatement($3, $5); }
+	| KW_IF '(' expression ')' statement KW_ELSE statement { $$ = new IfStatement($3, $5, $7); }
 ;
 
 iteration_statement
-	: KW_WHILE '(' expression ')' statement
-	| KW_FOR '(' expression_statement expression_statement ')' statement
-	| KW_FOR '(' expression_statement expression_statement expression ')' statement
+	: KW_WHILE '(' expression ')' statement { $$ = new WhileStatement($3, $5); }
+	| KW_FOR '(' expression_statement expression_statement ')' statement            { $$ = new ForStatement(((ExpressionStatement*)$3)->expr, ((ExpressionStatement*)$4)->expr, (Expression*)0, $6); }
+	| KW_FOR '(' expression_statement expression_statement expression ')' statement { $$ = new ForStatement(((ExpressionStatement*)$3)->expr, ((ExpressionStatement*)$4)->expr, $5, $7); }
 ;
 
 jump_statement
-	: KW_CONTINUE ';'
-	| KW_BREAK ';'
-	| KW_RETURN ';'
-	| KW_RETURN expression ';'
+	: KW_CONTINUE ';'          { $$ = new ContinueStatement(); }
+	| KW_BREAK ';'             { $$ = new BreakStatement(); }
+	| KW_RETURN ';'            { $$ = new ReturnStatement(); }
+	| KW_RETURN expression ';' { $$ = new ReturnStatement($2); }
 ;
