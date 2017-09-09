@@ -18,9 +18,10 @@ class Initializer;
 enum DataType {
     INT,
     CHAR,
+    VOID,
     INT_PTR,
     CHAR_PTR,
-    VOID,
+    VOID_PTR,
     UNDEF
 };
 

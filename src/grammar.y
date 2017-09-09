@@ -1,5 +1,6 @@
 %code requires {
 	#include "ast.h"
+	#include "binary-expr.h"
 }
 
 %{
@@ -31,12 +32,14 @@
 	vector<InitDeclarator*>* ideclr_ls;
 
 	Initializer* inlzr_t;
-	vector<Initializer*>* inlzr_ls;
 
 	Parameter* par_t;
 	vector<Parameter*>* par_ls;
 
 	DataType dt;
+
+	Expression* expr_t;
+	vector<Expression*>* expr_ls;
 
 	int int_t;
 
@@ -47,13 +50,17 @@
 %type<c_unit>       compilation_unit
 %type<gdec_t>       global_declaration function_definition declaration
 %type<declr_t>      declarator direct_declarator
-%type<dt>           data_type
+%type<dt>           data_type type_name
 %type<ideclr_ls>    init_declarator_list
 %type<ideclr_t>     init_declarator
 %type<inlzr_t>      initializer
-%type<inlzr_ls>     initializer_list
+%type<expr_ls>      initializer_list
 %type<par_t>        parameter_declaration
 %type<par_ls>       parameter_list
+%type<expr_t>       expression constant_expression assignment_expression
+%type<expr_t>       unary_expression cor_expression cand_expression conditional_expression 
+%type<expr_t>       xor_expression or_expression and_expression equality_expression relational_expression 
+%type<expr_t>       shift_expression additive_expression multiplicative_expression cast_expression
 
 %token KW_INT "int" KW_CHAR "char" KW_VOID "void"
 %token KW_FOR "for" KW_WHILE "while" KW_IF "if" KW_ELSE "else"
@@ -130,7 +137,7 @@ initializer
 
 initializer_list
 	: initializer_list ',' assignment_expression { $1->push_back($3); $$ = $1; }
-	| assignment_expression { $$ = new vector<Initializer*>(); $$->push_back($1); }
+	| assignment_expression { $$ = new vector<Expression*>(); $$->push_back($1); }
 ;
 
 parameter_list
@@ -152,8 +159,8 @@ data_type
 ;
 
 type_name
-	: data_type '*'
-	| data_type
+	: data_type '*' { $$ = (DataType)($1 + 3); }
+	| data_type { $$ = $1; }
 ;
 
 
@@ -191,16 +198,16 @@ assignment_operator
 
 
 expression
-	: assignment_expression
+	: assignment_expression { $$ = $1; }
 ;
 
 constant_expression
-	: conditional_expression
+	: conditional_expression { $$ = $1; }
 ;
 
 assignment_expression
-	: unary_expression assignment_operator assignment_expression
-	| conditional_expression
+	: unary_expression assignment_operator assignment_expression { $$ = new AssignmentExpression($1, $3); }
+	| conditional_expression { $$ = $1; }
 ;
 
 unary_expression
@@ -232,65 +239,65 @@ primary_expression
 ;
 
 conditional_expression
-	: cor_expression '?' expression ':' conditional_expression
+	: cor_expression '?' expression ':' conditional_expression { $$ = new ConditionalExpression($1, $3, $5); }
 	| cor_expression
 ;
 
 cor_expression
-	: cor_expression OP_COR and_expression
+	: cor_expression OP_COR and_expression { $$ = new CondOrExpression($1, $3); }
 	| cand_expression
 ;
 
 cand_expression
-	: cand_expression OP_CAND or_expression
+	: cand_expression OP_CAND or_expression { $$ = new CondAndExpression($1, $3); }
 	| or_expression
 ;
 
 or_expression
-	: or_expression '|' xor_expression
+	: or_expression '|' xor_expression { $$ = new OrExpression($1, $3); }
 	| xor_expression
 ;
 
 xor_expression
-	: xor_expression '^' and_expression
+	: xor_expression '^' and_expression { $$ = new XorExpression($1, $3); }
 	| and_expression
 ;
 
 and_expression
-	: and_expression '&' equality_expression
+	: and_expression '&' equality_expression { $$ = new AndExpression($1, $3); }
 	| equality_expression
 ;
 
 equality_expression
-	: equality_expression OP_EQ relational_expression
-	| equality_expression OP_NOTEQ relational_expression
+	: equality_expression OP_EQ relational_expression    { $$ = new EqualsExpression($1, $3); }
+	| equality_expression OP_NOTEQ relational_expression { $$ = new NotEqualsExpression($1, $3); }
 	| relational_expression
 ;
 
 relational_expression
-	: relational_expression '>' shift_expression
-	| relational_expression '<' shift_expression
-	| relational_expression OP_GEQ shift_expression
-	| relational_expression OP_LEQ shift_expression
+	: relational_expression '>' shift_expression    { $$ = new GreaterThanExpression($1, $3); }
+	| relational_expression '<' shift_expression    { $$ = new LessThanExpression($1, $3); }
+	| relational_expression OP_GEQ shift_expression { $$ = new GteExpression($1, $3); }
+	| relational_expression OP_LEQ shift_expression { $$ = new LteExpression($1, $3); }
 	| shift_expression
 ;
 
 shift_expression
-	: shift_expression OP_SRL additive_expression
-	| shift_expression OP_SLL additive_expression
+	: shift_expression OP_SRL additive_expression { $$ = new ShiftRightExpression($1, $3); }
+	| shift_expression OP_SLL additive_expression { $$ = new ShiftLeftExpression($1, $3); }
 	| additive_expression
 ;
 
 additive_expression
-	: additive_expression '+' multiplicative_expression
-	| additive_expression '-' multiplicative_expression
+	: additive_expression '+' multiplicative_expression { $$ = new SumExpression($1, $3); }
+	| additive_expression '-' multiplicative_expression { $$ = new SubExpression($1, $3); }
 	| multiplicative_expression
 ;
 
 multiplicative_expression
-	: multiplicative_expression '*' cast_expression
-	| multiplicative_expression '/' cast_expression
-	| multiplicative_expression '%' cast_expression
+	: multiplicative_expression '*' cast_expression { $$ = new MulExpression($1, $3); }
+	| multiplicative_expression '/' cast_expression { $$ = new DivExpression($1, $3); }
+	| multiplicative_expression '%' cast_expression { $$ = new ModExpression($1, $3); }
 	| cast_expression
 ;
 

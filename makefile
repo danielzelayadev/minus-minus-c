@@ -1,4 +1,4 @@
-CPP_SRC = $(PARSER) $(LEXER) src/main.cpp src/ast.cpp src/unary-expr.cpp src/binary-expr.cpp src/statements.cpp
+CPP_SRC = $(PARSER) $(LEXER) src/main.cpp src/ast.cpp src/expr.cpp src/unary-expr.cpp src/binary-expr.cpp src/statements.cpp
 
 ENTRY = samples/test.c
 
