@@ -6,7 +6,7 @@ array, and places all smaller (smaller than pivot)
 to left of pivot and all greater elements to right 
 of pivot */
 int a, b, c, d, e;
-int hehe[4];
+int hehe[4*17+38+(45*7)];
 int partition (int arr[], int l, int h) {
     int x = arr[h];
     int i = (l - 1);

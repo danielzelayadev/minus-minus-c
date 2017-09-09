@@ -8,6 +8,7 @@ class name##Expression : public PrimaryExpression { \
 public:                                \
     string literal;                    \
     name##Expression(string literal) { this->literal = literal; } \
+    string toString() { return literal; } \
 };
 
 class PrimaryExpression : public Expression {};
@@ -17,6 +18,7 @@ public:
     string id;
 
     IdExpression(string id) { this->id = id; }
+    string toString() { return id; }
 };
 
 DEFINE_LITERAL_EXPR(Int)

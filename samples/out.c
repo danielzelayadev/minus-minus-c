@@ -1,6 +1,6 @@
 int a, b, c, d, e;
 
-int hehe[];
+int hehe[4 * 17 + 38 + 45 * 7];
 
 int partition(int arr[], int l, int h)
 
