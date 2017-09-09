@@ -83,16 +83,16 @@ IGNORE [ \n\t\v\f]
 "?" { count(); return '?'; }
 
 
-{LETTER}({LETTER}|{DIGIT})* { count(); return ID; }
+{LETTER}({LETTER}|{DIGIT})* { count(); yylval.char_ptr = strdup(yytext); return ID; }
 
 
-0[xX]{HEX}+       { count(); return HEX_INT; }
-0{OCT}+           { count(); return OCT_INT; }
-(0|[1-9]{DIGIT}*) { count(); return DEC_INT; }
+0[xX]{HEX}+       { count(); yylval.char_ptr = strdup(yytext); return HEX_INT; }
+0{OCT}+           { count(); yylval.char_ptr = strdup(yytext); return OCT_INT; }
+(0|[1-9]{DIGIT}*) { count(); yylval.char_ptr = strdup(yytext); return DEC_INT; }
 
 
-'(\\.|[^\\'])+'   { count(); return CHAR_LIT; }
-\"(\\.|[^\\"])*\" { count(); return STRING_LIT; }
+'(\\.|[^\\'])+'   { count(); yylval.char_ptr = strdup(yytext); return CHAR_LIT; }
+\"(\\.|[^\\"])*\" { count(); yylval.char_ptr = strdup(yytext); return STRING_LIT; }
 
 
 "//" { BEGIN(SINGLE_COMMENT); }
