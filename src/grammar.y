@@ -7,7 +7,7 @@
 
 %{
     #include <stdio.h>
-	#include "ast.h"
+	#include "unary-expr.h"
 
 	int yylex();
 
@@ -15,6 +15,8 @@
 
 	extern int yylineno, column;
 	extern char *yytext;
+
+	UnaryExpression *getUnaryInstance(int, Expression*);
 
 	void yyerror(const char *str)
 	{
