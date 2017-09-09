@@ -14,6 +14,8 @@ public:
         declarations = dec;
         statements = stmts;
     }
+
+    string toString();
 };
 
 class ExpressionStatement : public Statement {
@@ -21,6 +23,7 @@ public:
     Expression *expr;
 
     ExpressionStatement(Expression *expr) { this->expr = expr; }
+    string toString() { return expr->toString() + ";"; }
 };
 
 class IfStatement : public Statement {
@@ -33,6 +36,7 @@ public:
         this->code = code;
         this->elseStmt = elseStmt;
     }
+    string toString();
 };
 
 class WhileStatement : public Statement {
@@ -41,6 +45,7 @@ public:
     Statement *code;
 
     WhileStatement(Expression *c, Statement *s) { condition = c; code = s; }
+    string toString() { return "while (" + condition->toString() + ") " + code->toString(); }
 };
 
 class ForStatement : public Statement {
@@ -54,16 +59,24 @@ public:
         stepExpr = se;
         code     = cd;
     }
+    string toString();
 };
 
-class ContinueStatement : public Statement {};
-class BreakStatement : public Statement {};
+class ContinueStatement : public Statement {
+public:
+    string toString() { return "continue;"; }
+};
+class BreakStatement : public Statement {
+public:
+    string toString() { return "break;"; }
+};
 
 class ReturnStatement : public Statement {
 public:
     Expression *expr;
 
     ReturnStatement(Expression *expr = 0) { this->expr = expr; }
+    string toString() { return "return" + (expr ? " " + expr->toString() : "") + ";"; }
 };
 
 #endif // !STATEMENT
