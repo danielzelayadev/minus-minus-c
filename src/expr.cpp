@@ -5,3 +5,8 @@ ConditionalExpression::ConditionalExpression(Expression* f, Expression* s, Expre
     this->second = s;
     this->third = t;
 }
+
+CastExpression::CastExpression(DataType castType, Expression *expr) {
+    this->castType = castType;
+    this->expr = expr;
+}

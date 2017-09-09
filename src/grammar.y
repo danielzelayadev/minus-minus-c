@@ -302,7 +302,7 @@ multiplicative_expression
 ;
 
 cast_expression
-	: '(' type_name ')' cast_expression
+	: '(' type_name ')' cast_expression { $$ = new CastExpression($2, $4); }
 	| unary_expression
 ;
 

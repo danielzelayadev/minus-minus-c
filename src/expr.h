@@ -14,4 +14,12 @@ public:
     ConditionalExpression(Expression*, Expression*, Expression*);
 };
 
+class CastExpression : public Expression {
+public:
+    DataType castType;
+    Expression *expr;
+
+    CastExpression(DataType, Expression*);
+};
+
 #endif
