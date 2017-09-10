@@ -1,4 +1,6 @@
-CPP_SRC = $(PARSER) $(LEXER) src/main.cpp src/ast.cpp src/expr.cpp src/unary-expr.cpp src/binary-expr.cpp src/primary-expr.cpp src/postfix-expr.cpp src/statements.cpp
+CPP_SRC =  $(PARSER) $(LEXER) src/main.cpp src/ast.cpp src/expr.cpp
+CPP_SRC += src/unary-expr.cpp src/binary-expr.cpp src/primary-expr.cpp
+CPP_SRC += src/postfix-expr.cpp src/statements.cpp src/symbol-table.cpp src/context.cpp
 
 ENTRY = samples/test.c
 OUTPUT = samples/out.c
@@ -25,7 +27,7 @@ all: run
 build: $(TARGET)
 
 run: $(TARGET)
-	./$(TARGET) $(ENTRY) > $(OUTPUT)
+	./$(TARGET) $(ENTRY)
 
 $(LEXER): $(FLEX_SRC)
 	flex -o $@ $<
