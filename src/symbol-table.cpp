@@ -1,4 +1,5 @@
 #include "symbol-table.h"
+#include "errors.h"
 
 VarTable::VarTable(VarTable *p) {
     variables = new vector<Variable*>();
@@ -11,6 +12,9 @@ VarTable::VarTable() {
 }
 
 void VarTable::declare(Variable *v) {
+    if (existsLocally(v->id))
+        error("Redefinition of variable");
+        
     variables->push_back(v);
 }
 

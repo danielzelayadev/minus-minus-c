@@ -1,5 +1,11 @@
 #include "ast.h"
 #include "statements.h"
+#include "context.h"
+#include <stdio.h>
+
+extern Context *ctx;
+extern VarTable *varTable;
+extern FunctionTable *functTable;
 
 string mapType(int t) {
     switch (t) {
@@ -40,6 +46,15 @@ CompilationUnit::CompilationUnit() {
     this->globalDecs = new vector<GlobalDeclaration*>();
 }
 
+void CompilationUnit::checkSemantic() {
+    ctx->enter();
+
+    for (int i = 0; i < globalDecs->size(); i++)
+        (*globalDecs)[i]->checkSemantic();
+
+    ctx->leave();
+}
+
 string CompilationUnit::toString() {
     stringstream str;
 
@@ -61,6 +76,10 @@ FunctionDefinition::FunctionDefinition(DataType returnType, FunctionDeclarator* 
     this->cb = cb;
 }
 
+void FunctionDefinition::checkSemantic() {
+    // Declare Function o Expand FunctionInfo en el Symbol Table si ya existe
+}
+
 string FunctionDefinition::toString() {
     string str = "";
 
@@ -75,6 +94,11 @@ string FunctionDefinition::toString() {
 Declaration::Declaration(DataType dataType, vector<InitDeclarator*>*initDecList) {
     this->dataType = dataType;
     this->initDecList = initDecList;
+}
+
+void Declaration::checkSemantic() {
+    for (int i = 0; i < initDecList->size(); i++)
+        (*initDecList)[i]->checkSemantic(dataType);
 }
 
 string Declaration::toString() {
@@ -92,6 +116,10 @@ Declarator::Declarator(string id) {
     this->isPointer = false;
 }
 
+void Declarator::checkSemantic(DataType dt) {
+    varTable->declare(new Variable((DataType)(dt + (isPointer ? 3 : 0)), id));
+}
+
 string Declarator::toString() {
     string str;
 
@@ -103,6 +131,10 @@ string Declarator::toString() {
 
 ArrayDeclarator::ArrayDeclarator(string id, Expression* dimExpr) : Declarator(id) {
     this->dimExpr = dimExpr;
+}
+
+void ArrayDeclarator::checkSemantic(DataType dt) {
+    
 }
 
 string ArrayDeclarator::toString() {
@@ -119,6 +151,10 @@ FunctionDeclarator::FunctionDeclarator(string id, vector<Parameter*>* params) : 
     this->params = params;
 }
 
+void FunctionDeclarator::checkSemantic(DataType dt) {
+
+}
+
 string FunctionDeclarator::toString() {
     string str = id + "(";
 
@@ -132,6 +168,10 @@ string FunctionDeclarator::toString() {
 InitDeclarator::InitDeclarator(Declarator* decl, Initializer* init) {
     this->declarator  = decl;
     this->initializer = init;
+}
+
+void InitDeclarator::checkSemantic(DataType dt) {
+
 }
 
 string InitDeclarator::toString() {

@@ -1,12 +1,19 @@
 #include <iostream>
 #include <stdio.h>
 #include "ast.h"
+#include "context.h"
+#include "errors.h"
 
 using namespace std;
+
+Context *ctx;
+VarTable *varTable;
+FunctionTable *functTable;
 
 extern CompilationUnit* ast;
 
 extern FILE* yyin;
+
 int yyparse();
 
 int main(int argc, char **argv) {
@@ -25,7 +32,14 @@ int main(int argc, char **argv) {
 
     yyparse();
 
-    cout << ast->toString() << endl;
+    ctx = new Context(&varTable);
+
+    functTable = new FunctionTable();
+
+    ast->checkSemantic();
+
+    if (finishedWithErrors())
+        printErrors();
 
     return 0;
 }

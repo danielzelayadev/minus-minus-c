@@ -13,10 +13,22 @@ using namespace std;
 class Symbol {
 public:
     string id;
+
+    Symbol(string id) { this->id = id; }
 };
 
-class Variable : public Symbol {};
-class Function : public Symbol {};
+class Variable : public Symbol {
+public:
+    DataType type;
+
+    Variable(DataType type, string id) : Symbol(id) { this->type = type; }
+};
+class Function : public Symbol {
+public:
+    DataType returnType;
+
+    Function(DataType rt, string id) : Symbol(id) { returnType = rt; }
+};
 
 class SymbolTable {};
 

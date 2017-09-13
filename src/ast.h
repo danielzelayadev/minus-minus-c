@@ -25,8 +25,15 @@ enum DataType {
     UNDEF
 };
 
+enum DeclaratorKind {
+    REGULAR,
+    ARRAY,
+    FUNCTION
+};
+
 class ASTNode {
 public:
+    virtual void checkSemantic() {}
     virtual string toString() {
         return "";
     }
@@ -37,6 +44,7 @@ public:
     vector<GlobalDeclaration*>* globalDecs;
 
     CompilationUnit();
+    void checkSemantic();
     string toString();
 };
 
@@ -51,6 +59,8 @@ public:
     FunctionDefinition(DataType returnType, FunctionDeclarator* declarator, CodeBlock* cb);
     FunctionDefinition(FunctionDeclarator* declarator, CodeBlock* cb);
 
+    void checkSemantic();
+
     string toString();
 };
 
@@ -60,6 +70,8 @@ public:
     vector<InitDeclarator*>* initDecList;
 
     Declaration(DataType, vector<InitDeclarator*>* = 0);
+
+    void checkSemantic();
 
     string toString();
 };
@@ -75,6 +87,8 @@ public:
 
     Declarator(string);
 
+    virtual void checkSemantic(DataType);
+
     string toString();
 };
 
@@ -83,6 +97,8 @@ public:
     Expression *dimExpr;
 
     ArrayDeclarator(string, Expression*);
+
+    void checkSemantic(DataType);
 
     string toString();
 };
@@ -93,6 +109,8 @@ public:
     
     FunctionDeclarator(string, vector<Parameter*>*);
 
+    void checkSemantic(DataType);
+
     string toString();
 };
 
@@ -102,6 +120,8 @@ public:
     Initializer* initializer;
 
     InitDeclarator(Declarator*, Initializer*);
+
+    void checkSemantic(DataType);
 
     string toString();
 };
