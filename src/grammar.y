@@ -98,7 +98,7 @@
 
 compilation_unit
 	: compilation_unit global_declaration { $1->globalDecs->push_back($2); $$ = ast = $1; }
-	| global_declaration { $$ = new CompilationUnit(); $$->globalDecs->push_back($1); }
+	| global_declaration { $$ = ast = new CompilationUnit(); $$->globalDecs->push_back($1); }
 ;
 
 global_declaration
