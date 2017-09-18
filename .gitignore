@@ -6,3 +6,4 @@ src/parser.cpp
 src/tokens.h
 .vscode
 *.txt
+vmipssoc/src/main.S
