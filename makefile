@@ -3,8 +3,8 @@ CPP_SRC += src/unary-expr.cpp src/binary-expr.cpp src/primary-expr.cpp
 CPP_SRC += src/postfix-expr.cpp src/statements.cpp src/symbol-table.cpp src/context.cpp
 CPP_SRC += src/errors.cpp
 
-ENTRY = samples/test.c
-OUTPUT = samples/out.c
+ENTRY = samples/HelloWorld.c
+OUTPUT = vmipssoc/src/main.S
 
 LEXER = src/lexer.cpp
 PARSER = src/parser.cpp
@@ -28,7 +28,7 @@ all: run
 build: $(TARGET)
 
 run: $(TARGET)
-	./$(TARGET) $(ENTRY)
+	./$(TARGET) $(ENTRY) $(OUTPUT)
 
 $(LEXER): $(FLEX_SRC)
 	flex -o $@ $<

@@ -34,9 +34,8 @@ enum DeclaratorKind {
 class ASTNode {
 public:
     virtual void checkSemantic() {}
-    virtual string toString() {
-        return "";
-    }
+    virtual string genCode()  { return ""; }
+    virtual string toString() { return ""; }
 };
 
 class CompilationUnit : public ASTNode {
@@ -45,6 +44,7 @@ public:
 
     CompilationUnit();
     void checkSemantic();
+    string genCode();
     string toString();
 };
 

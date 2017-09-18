@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <stdio.h>
 #include "ast.h"
 #include "context.h"
@@ -16,19 +17,29 @@ extern FILE* yyin;
 
 int yyparse();
 
+int fileNotFoundErr(char *file) {
+    printf("File '%s' not found.\n", file);
+    return 1;
+}
+
 int main(int argc, char **argv) {
 
-    if (argc != 2) {
-        printf("Usage: %s [FILE]\n", argv[0]);
+    ofstream outputFile;
+
+    if (argc != 3) {
+        printf("Usage: %s [ENTRY] [OUTPUT]\n", argv[0]);
         return 1;
     }
 
     yyin = fopen(argv[1], "r");
 
-    if (!yyin) {
-        printf("File '%s' not found.\n", argv[1]);
-        return 1;
-    }
+    if (!yyin)
+        return fileNotFoundErr(argv[1]);
+
+    outputFile.open (argv[2]);
+
+    if (outputFile.fail())
+        return fileNotFoundErr(argv[2]);
 
     yyparse();
 
@@ -40,6 +51,10 @@ int main(int argc, char **argv) {
 
     if (finishedWithErrors())
         printErrors();
+    else
+        outputFile << ast->genCode() << endl;
+
+    outputFile.close();
 
     return 0;
 }

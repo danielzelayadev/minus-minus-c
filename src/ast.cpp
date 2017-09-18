@@ -7,6 +7,9 @@ extern Context *ctx;
 extern VarTable *varTable;
 extern FunctionTable *functTable;
 
+map<string, string> globals;
+map<string, string> data;
+
 string mapType(int t) {
     switch (t) {
         case INT:
@@ -44,6 +47,29 @@ string join(vector<ASTNode*>* ls, string delim) {
 
 CompilationUnit::CompilationUnit() {
     this->globalDecs = new vector<GlobalDeclaration*>();
+}
+
+string CompilationUnit::genCode() {
+    string code = "";
+    string childCode = "";
+
+    for (int i = 0; i < globalDecs->size(); i++)
+        childCode += (*globalDecs)[i]->genCode();
+    
+    code += "#include \"screen.h\"\n";
+    code += "#include \"system.h\"\n\n";
+
+    // globals
+
+    code += ".data\n\n";
+
+    // data
+
+    code += ".text\n\n";
+
+    code += childCode;
+    
+    return code;
 }
 
 void CompilationUnit::checkSemantic() {
