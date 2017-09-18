@@ -23,9 +23,6 @@ int fileNotFoundErr(char *file) {
 }
 
 int main(int argc, char **argv) {
-
-    ofstream outputFile;
-
     if (argc != 3) {
         printf("Usage: %s [ENTRY] [OUTPUT]\n", argv[0]);
         return 1;
@@ -36,12 +33,14 @@ int main(int argc, char **argv) {
     if (!yyin)
         return fileNotFoundErr(argv[1]);
 
-    outputFile.open (argv[2]);
-
-    if (outputFile.fail())
-        return fileNotFoundErr(argv[2]);
+    cout << "Beginning compilation...\n";
 
     yyparse();
+
+    if (!ast) {
+        cout << "Something went wrong while parsing.\n";
+        return 1;
+    }
 
     ctx = new Context(&varTable);
 
@@ -51,10 +50,15 @@ int main(int argc, char **argv) {
 
     if (finishedWithErrors())
         printErrors();
-    else
+    else {
+        ofstream outputFile(argv[2]);
+        
         outputFile << ast->genCode() << endl;
+        
+        outputFile.close();
 
-    outputFile.close();
+        cout << "Compiled successfully.\n";
+    }
 
     return 0;
 }
