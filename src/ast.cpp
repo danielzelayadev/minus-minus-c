@@ -45,6 +45,19 @@ string join(vector<ASTNode*>* ls, string delim) {
     return str;
 }
 
+string joinMap(map<string, string> *mp, string delim) {
+    string str;
+    map<string, string>::iterator it = mp->begin();
+
+    while (it != mp->end()) {
+        str += it->second;
+        if (it != mp->end())
+            str += delim;
+    }
+
+    return str;
+}
+
 CompilationUnit::CompilationUnit() {
     this->globalDecs = new vector<GlobalDeclaration*>();
 }
@@ -59,12 +72,12 @@ string CompilationUnit::genCode() {
     code += "#include \"screen.h\"\n";
     code += "#include \"system.h\"\n\n";
 
-    // globals
-
+    code += joinMap(&globals, "\n") + "\n";
+    
     code += ".data\n\n";
 
-    // data
-
+    code += joinMap(&data, "\n") + "\n";
+    
     code += ".text\n\n";
 
     code += childCode;
