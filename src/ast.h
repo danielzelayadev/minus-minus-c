@@ -61,6 +61,7 @@ public:
 
     void checkSemantic();
 
+    string genCode();
     string toString();
 };
 
@@ -111,6 +112,7 @@ public:
 
     void checkSemantic(DataType);
 
+    string genCode();
     string toString();
 };
 

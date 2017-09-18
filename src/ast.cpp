@@ -1,6 +1,7 @@
 #include "ast.h"
 #include "statements.h"
 #include "context.h"
+#include "helpers.h"
 #include <stdio.h>
 
 extern Context *ctx;
@@ -50,12 +51,16 @@ string joinMap(map<string, string> *mp, string delim) {
     map<string, string>::iterator it = mp->begin();
 
     while (it != mp->end()) {
-        str += it->second;
+        str += (it++)->second;
         if (it != mp->end())
             str += delim;
     }
 
     return str;
+}
+
+void newGlobal(string name) {
+    globals[name] = ".global " + name + "\n";
 }
 
 CompilationUnit::CompilationUnit() {
@@ -113,6 +118,15 @@ FunctionDefinition::FunctionDefinition(DataType returnType, FunctionDeclarator* 
     this->returnType = returnType;
     this->declarator = declarator;
     this->cb = cb;
+}
+
+string FunctionDefinition::genCode() {
+    string code;
+
+    code += declarator->genCode();
+    code += cb->genCode();
+
+    return code;
 }
 
 void FunctionDefinition::checkSemantic() {
@@ -188,6 +202,16 @@ string ArrayDeclarator::toString() {
 
 FunctionDeclarator::FunctionDeclarator(string id, vector<Parameter*>* params) : Declarator(id) {
     this->params = params;
+}
+
+string FunctionDeclarator::genCode() {
+    string code;
+
+    code += id + ":\n\n";
+
+    newGlobal(id);
+
+    return code;
 }
 
 void FunctionDeclarator::checkSemantic(DataType dt) {

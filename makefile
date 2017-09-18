@@ -1,7 +1,7 @@
 CPP_SRC =  $(PARSER) $(LEXER) src/main.cpp src/ast.cpp src/expr.cpp
 CPP_SRC += src/unary-expr.cpp src/binary-expr.cpp src/primary-expr.cpp
 CPP_SRC += src/postfix-expr.cpp src/statements.cpp src/symbol-table.cpp src/context.cpp
-CPP_SRC += src/errors.cpp
+CPP_SRC += src/errors.cpp src/helpers.cpp
 
 ENTRY = samples/HelloWorld.c
 OUTPUT = vmipssoc/src/main.S
@@ -18,6 +18,8 @@ FLEX_SRC = src/tokens.l
 BISON_SRC = src/grammar.y
 
 OBJ_FILES = ${CPP_SRC:src/%.cpp=obj/%.o}
+
+CXXFLAGS=-std=c++11
 
 TARGET = bin/mmc
 
@@ -39,10 +41,10 @@ $(PARSER): $(BISON_SRC)
 
 obj/%.o: src/%.cpp
 	mkdir -p obj
-	g++ -w -g -c -o $@ $<
+	g++ -std=c++11 -w -g -c -o $@ $<
 
 $(TARGET): $(OBJ_FILES)
-	g++ -w -g -o $@ $^
+	g++ -std=c++11 -w -g -o $@ $^
 
 clean:
 	rm -f bin/* obj/* debug/*
