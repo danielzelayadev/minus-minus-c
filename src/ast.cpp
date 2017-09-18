@@ -133,6 +133,8 @@ string FunctionDefinition::genCode() {
     code += stackLoadW("$ra");
     code += stackFree(4);
 
+    code += "\n";
+
     code += jumpReturn();
 
     return code;

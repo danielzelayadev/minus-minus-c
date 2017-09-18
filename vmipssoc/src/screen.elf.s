@@ -573,13 +573,19 @@ Disassembly of section .text:
 
 00400744 <main>:
   400744:	23bdfffc 	addi	sp,sp,-4
-  400748:	2408000a 	li	t0,10
-  40074c:	afa80000 	sw	t0,0(sp)
-  400750:	23bdffff 	addi	sp,sp,-1
-  400754:	2408006a 	li	t0,106
-  400758:	a3a80004 	sb	t0,4(sp)
-  40075c:	03e00008 	jr	ra
-  400760:	23bd0005 	addi	sp,sp,5
+  400748:	afbf0000 	sw	ra,0(sp)
+  40074c:	8fbf0000 	lw	ra,0(sp)
+  400750:	23bd0004 	addi	sp,sp,4
+  400754:	03e00008 	jr	ra
+  400758:	00000000 	nop
+
+0040075c <hehe>:
+  40075c:	23bdfffc 	addi	sp,sp,-4
+  400760:	afbf0000 	sw	ra,0(sp)
+  400764:	8fbf0000 	lw	ra,0(sp)
+  400768:	23bd0004 	addi	sp,sp,4
+  40076c:	03e00008 	jr	ra
+  400770:	00000000 	nop
 
 Disassembly of section .data:
 
@@ -604,28 +610,10 @@ Disassembly of section .data:
 1001001c <next_key_time>:
 1001001c:	00000000 	nop
 
-10010020 <hi>:
-10010020:	00000000 	nop
-
-10010024 <lo>:
-10010024:	00000000 	nop
-
-10010028 <str0>:
-10010028:	69203d20 	0x69203d20
-1001002c:	00000000 	nop
-
-10010030 <i>:
-10010030:	00000000 	nop
-
-10010034 <str2>:
-10010034:	456e6420 	0x456e6420
-10010038:	6f66206c 	0x6f66206c
-1001003c:	6f6f7000 	0x6f6f7000
-
 Disassembly of section .gnu.attributes:
 
 00000000 <.gnu.attributes>:
    0:	41000000 	bc0f	4 <_gp+0x4>
-   4:	0f676e75 	jal	d9db9d4 <main+0xd5db290>
+   4:	0f676e75 	jal	d9db9d4 <hehe+0xd5db278>
    8:	00010000 	sll	zero,at,0x0
    c:	00070401 	0x70401

@@ -6,6 +6,14 @@ string join(vector<ASTNode*>*, string);
 string CodeBlock::genCode() {
     string code;
 
+    for (int i = 0; i < declarations->size(); i++)
+        code += (*declarations)[i]->genCode();
+
+    code += "\n";
+
+    for (int i = 0; i < statements->size(); i++)
+        code += (*statements)[i]->genCode();
+
     return code;
 }
 
