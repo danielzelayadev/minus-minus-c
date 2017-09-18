@@ -15,6 +15,7 @@ public:
         statements = stmts;
     }
 
+    string genCode();
     string toString();
 };
 

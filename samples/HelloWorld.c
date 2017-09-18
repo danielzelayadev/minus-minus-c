@@ -6,3 +6,7 @@
 void main() {
     printf("Hello World!\n"); 
 }
+
+void hehe() {
+    
+}

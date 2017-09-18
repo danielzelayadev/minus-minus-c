@@ -124,7 +124,16 @@ string FunctionDefinition::genCode() {
     string code;
 
     code += declarator->genCode();
+
+    code += stackAlloc(4);
+    code += stackStoreW("$ra");
+
     code += cb->genCode();
+
+    code += stackLoadW("$ra");
+    code += stackFree(4);
+
+    code += jumpReturn();
 
     return code;
 }

@@ -1,6 +1,13 @@
 #include "statements.h"
+#include "helpers.h"
 
 string join(vector<ASTNode*>*, string);
+
+string CodeBlock::genCode() {
+    string code;
+
+    return code;
+}
 
 string CodeBlock::toString() {
     string str = "{";
