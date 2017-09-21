@@ -9,6 +9,10 @@ class Expression;
 
 string newLabel(string = "label");
 
+string move(string, string);
+
+string clearScreen();
+
 string stackStoreW(string = "$t0", int = 0);
 string stackStoreB(string = "$t0", int = 0);
 string stackLoadW(string  = "$t0", int = 0);

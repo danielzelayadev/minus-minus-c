@@ -9,6 +9,21 @@ string newLabel(string prefix) {
     return prefix + "__" + to_string(LABEL_HASH);
 }
 
+string move(string rdst, string rsrc) {
+    return "move " + rdst + ", " + rsrc + "\n";
+}
+
+string clearScreen() {
+    string code;
+
+    code += "li $a0, BRIGHT_WHITE\n";
+    code += "li $a1, BLACK\n";
+    code += "jal set_color\n";
+    code += "jal clear_screen\n";
+
+    return code;
+}
+
 string stackIO(string instr, string reg, int offset) {
     return instr + " " + reg + ", " + to_string(offset) + "($sp)\n";
 }
