@@ -1,14 +1,10 @@
 #ifndef  MEMORY
 #define  MEMORY
 
-// Regs
-// Data
-// Stack
+#include <string>
 
-class Stack;
-class Data;
-class RegisterMaster;
+using namespace std;
 
-class RegisterSet;
+string newString(string = "");
 
 #endif
