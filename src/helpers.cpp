@@ -1,9 +1,12 @@
 #include "helpers.h"
+#include "utils.h"
+
+#define LABEL_HASH uniqueId(labelCount++, labelCount * 3, labelCount - 10, labelCount * 7)
 
 int labelCount = 0;
 
 string newLabel(string prefix) {
-    return prefix + to_string(labelCount++) + ":\n\n";
+    return prefix + to_string(LABEL_HASH) + ":\n\n";
 }
 
 string stackIO(string instr, string reg, int offset) {
