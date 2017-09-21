@@ -6,5 +6,7 @@
 using namespace std;
 
 string newString(string = "");
+int newTemp();
+void freeTemp(int);
 
 #endif
