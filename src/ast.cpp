@@ -7,19 +7,9 @@
 extern Context *ctx;
 extern VarTable *varTable;
 extern FunctionTable *functTable;
-
-int dataCount = 0;
+extern map<string, string> data;
 
 map<string, string> globals;
-map<string, string> data;
-
-string newString(string literal) {
-    string label = "str" + to_string(dataCount++);
-
-    data[label] = label + ": .asciiz \"" + literal + "\"";
-
-    return label;
-}
 
 string mapType(int t) {
     switch (t) {

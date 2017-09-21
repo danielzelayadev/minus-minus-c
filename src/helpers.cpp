@@ -6,7 +6,7 @@
 int labelCount = 0;
 
 string newLabel(string prefix) {
-    return prefix + to_string(LABEL_HASH) + ":\n\n";
+    return prefix + "__" + to_string(LABEL_HASH);
 }
 
 string stackIO(string instr, string reg, int offset) {
