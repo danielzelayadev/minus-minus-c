@@ -1,10 +1,7 @@
 CPP_SRC =  $(PARSER) $(LEXER) src/main.cpp src/ast.cpp src/expr.cpp
 CPP_SRC += src/unary-expr.cpp src/binary-expr.cpp src/primary-expr.cpp
 CPP_SRC += src/postfix-expr.cpp src/statements.cpp src/symbol-table.cpp src/context.cpp
-CPP_SRC += src/errors.cpp src/helpers.cpp
-
-ENTRY = samples/HelloWorld.c
-OUTPUT = vmipssoc/src/main.S
+CPP_SRC += src/errors.cpp src/helpers.cpp src/memory.cpp
 
 LEXER = src/lexer.cpp
 PARSER = src/parser.cpp
@@ -25,12 +22,7 @@ TARGET = bin/mmc
 
 .PHONY: clean
 
-all: run
-
 build: $(TARGET)
-
-run: $(TARGET)
-	./$(TARGET) $(ENTRY) $(OUTPUT)
 
 $(LEXER): $(FLEX_SRC)
 	flex -o $@ $<
