@@ -3,7 +3,10 @@
 
 #include "ast.h"
 
-class Expression : public ASTNode {};
+class Expression : public ASTNode {
+public:
+    int place;
+};
 
 class ConditionalExpression : public Expression {
 public:
