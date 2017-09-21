@@ -29,6 +29,7 @@ public:
         this->funcExpr = funcExpr;
         this->args = args;
     }
+    string genCode();
     string toString() {
         return funcExpr->toString() + "(" + join((vector<ASTNode*>*)args, ", ") + ")";
     }
