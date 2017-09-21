@@ -10,6 +10,7 @@
 .global put_udecimal
 .global draw_rect
 .global fill_rect
+.global printf
 
 .data
 
@@ -18,6 +19,81 @@ cursor_col: .byte 0
 cursor_row: .byte 0
 
 .text
+
+printf:
+	addi $sp, $sp, -24
+	sw $ra, 0($sp)
+	sw $a0, 4($sp) # preserve char *str
+
+	# args[3]
+	sw $a1, 8($sp)  # [0]
+	sw $a2, 12($sp) # [1]
+	sw $a3, 16($sp) # [2]
+
+	sw $0, 20($sp)  # currArg = 0
+
+.str_iter:
+	lw $t0, 4($sp) # str
+	lb $t1, 0($t0) # *str
+
+	seq $t2, $t0, $0
+	bnez $t2, .end_printf
+	seq $t2, $t1, $0
+	bnez $t2, .end_printf
+
+	lw $t2, 20($sp) # currArg
+
+	slti $t2, $t2, 12
+	beqz $t2, .is_char # Prohibir mas de 3 %d en el str
+
+	seq $t2, $t1, '%'
+	beqz $t2, .is_char
+
+	# str++
+	addi $t0, $t0, 1
+	sw $t0, 4($sp)
+
+	lb $t1, 0($t0) # *str
+
+	seq $t2, $t1, 'd'
+
+	beqz $t2, .str_iter  # continue
+
+	lw $t2, 20($sp) # currArg
+
+	# args[currArg]
+	addi $t3, $sp, 8  # args
+	add $t3, $t3, $t2 # args[currArg]
+
+	# currArg++
+	addi $t2, $t2, 4
+	sw $t2, 20($sp)
+
+	lw $a0, 0($t3) # put_udecimal(args[currArg])
+
+	jal put_udecimal
+	j .str_iter_end
+
+.is_char:
+	lw $t0, 4($sp) # str
+	lb $a0, 0($t0) # *str
+	jal put_char
+
+.str_iter_end:
+
+	# str++
+	lw $t0, 4($sp) # str
+	addi $t0, $t0, 1
+	sw $t0, 4($sp)
+
+	j .str_iter
+
+.end_printf:
+
+	lw $ra, 0($sp)
+	addi $sp, $sp, 24
+
+	jr $ra
 
 set_color:
     sll $a1, $a1, 4
