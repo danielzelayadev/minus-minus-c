@@ -1,5 +1,7 @@
 #include "statements.h"
 #include "helpers.h"
+#include "memory.h"
+#include <iostream>
 
 string join(vector<ASTNode*>*, string);
 
@@ -10,7 +12,7 @@ string CodeBlock::genCode() {
         code += (*declarations)[i]->genCode();
 
     code += "\n";
-
+    
     for (int i = 0; i < statements->size(); i++)
         code += (*statements)[i]->genCode();
 
@@ -49,4 +51,10 @@ string ForStatement::toString() {
     str += ") " + code->toString();
 
     return str;
+}
+
+string ExpressionStatement::genCode() {
+    string code = expr->genCode();
+    freeTemp(expr->place);
+    return code;
 }
