@@ -244,11 +244,11 @@ postfix_expression
 
 primary_expression
 	: ID                 { $$ = new IdExpression($1); }
-	| DEC_INT            { $$ = new IntExpression($1); }
-	| OCT_INT            { $$ = new IntExpression($1); }
-	| HEX_INT            { $$ = new IntExpression($1); }
-	| CHAR_LIT           { $$ = new CharExpression($1); }
-	| STRING_LIT         { $$ = new StringExpression($1); }
+	| DEC_INT            { $$ = new IntExpression(new string($1)); }
+	| OCT_INT            { $$ = new IntExpression(new string($1)); }
+	| HEX_INT            { $$ = new IntExpression(new string($1)); }
+	| CHAR_LIT           { $$ = new CharExpression(new string($1)); }
+	| STRING_LIT         { $$ = new StringExpression(new string($1)); }
 	| '(' expression ')' { $$ = $2; }
 ;
 

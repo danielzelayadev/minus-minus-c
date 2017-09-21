@@ -3,7 +3,10 @@
 
 #include "expr.h"
 
-class Statement : public ASTNode {};
+class Statement : public ASTNode {
+public:
+    virtual string genCode() { return ""; }
+};
 
 class CodeBlock : public Statement {
 public:
@@ -24,6 +27,7 @@ public:
     Expression *expr;
 
     ExpressionStatement(Expression *expr) { this->expr = expr; }
+    string genCode();
     string toString() { return expr->toString() + ";"; }
 };
 

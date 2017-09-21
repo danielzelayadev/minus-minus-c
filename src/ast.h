@@ -34,7 +34,6 @@ enum DeclaratorKind {
 class ASTNode {
 public:
     virtual void checkSemantic() {}
-    virtual string genCode()  { return ""; }
     virtual string toString() { return ""; }
 };
 
@@ -48,7 +47,10 @@ public:
     string toString();
 };
 
-class GlobalDeclaration : public ASTNode {};
+class GlobalDeclaration : public ASTNode {
+public:
+    virtual string genCode() { return ""; }
+};
 
 class FunctionDefinition : public GlobalDeclaration {
 public:
@@ -74,6 +76,7 @@ public:
 
     void checkSemantic();
 
+    virtual string genCode() { return ""; }
     string toString();
 };
 

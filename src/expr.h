@@ -6,6 +6,7 @@
 class Expression : public ASTNode {
 public:
     int place;
+    virtual string genCode() { return ""; }
 };
 
 class ConditionalExpression : public Expression {
