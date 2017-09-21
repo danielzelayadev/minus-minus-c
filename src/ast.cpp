@@ -81,7 +81,7 @@ string CompilationUnit::genCode() {
     
     code += ".data\n\n";
 
-    code += joinMap(&data, "\n") + "\n";
+    code += joinMap(&data, "\n") + "\n\n";
     
     code += ".text\n\n";
 
@@ -128,6 +128,9 @@ string FunctionDefinition::genCode() {
     code += stackAlloc(4);
     code += stackStoreW("$ra");
 
+    if (declarator->id == "main")
+        code += "\n" + clearScreen();
+
     code += cb->genCode();
 
     code += stackLoadW("$ra");
@@ -141,7 +144,6 @@ string FunctionDefinition::genCode() {
 }
 
 void FunctionDefinition::checkSemantic() {
-    // Declare Function o Expand FunctionInfo en el Symbol Table si ya existe
 }
 
 string FunctionDefinition::toString() {
