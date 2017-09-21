@@ -1,12 +1,17 @@
 #include "primary-expr.h"
-#include "helpers.h"
-
-string newString(string);
+#include "memory.h"
+#include <iostream>
 
 string StringExpression::genCode() {
-    string code;
+    place = newTemp();
 
-    code += "lw $t0, " + newString(literal) + "\n";
+    return "la $t" + to_string(place) + ", " + newString(*literal) + "\n";
+}
 
-    return code;
+string IntExpression::genCode() {
+    return "";
+}
+
+string CharExpression::genCode() {
+    return "";
 }
