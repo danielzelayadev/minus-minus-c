@@ -3,10 +3,19 @@
 #include "memory.h"
 #include <iostream>
 
+extern Stack *callStack;
+extern int currScope;
+
 string join(vector<ASTNode*>*, string);
 
 string CodeBlock::genCode() {
     string code;
+
+    currScope++;
+
+    callStack->pushFrame();
+
+    code += prologue();
 
     for (int i = 0; i < declarations->size(); i++)
         code += (*declarations)[i]->genCode();
@@ -15,6 +24,12 @@ string CodeBlock::genCode() {
     
     for (int i = 0; i < statements->size(); i++)
         code += (*statements)[i]->genCode();
+
+    callStack->popFrame();
+
+    code += epilogue();
+
+    currScope--;
 
     return code;
 }
