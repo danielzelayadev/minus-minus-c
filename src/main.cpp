@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "ast.h"
 #include "context.h"
+#include "memory.h"
 #include "errors.h"
 
 using namespace std;
@@ -10,6 +11,9 @@ using namespace std;
 Context *ctx;
 VarTable *varTable;
 FunctionTable *functTable;
+
+Stack *callStack;
+int currScope;
 
 extern CompilationUnit* ast;
 
@@ -52,8 +56,12 @@ int main(int argc, char **argv) {
         printErrors();
     else {
         ofstream outputFile(argv[2]);
+
+        callStack = new Stack();
         
         outputFile << ast->genCode() << endl;
+
+        delete callStack;
         
         outputFile.close();
 
