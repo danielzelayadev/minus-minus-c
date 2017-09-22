@@ -282,7 +282,7 @@ string InitDeclarator::genCode(DataType dt) {
             else
                 code += stackAlloc(1);
         
-        
+        callStack->push(id, dt == INT ? 4 : 1);
 
         if (initExpr) {
             cout << "TODO: Support init expressions\n";
