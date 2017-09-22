@@ -76,7 +76,7 @@ public:
 
     void checkSemantic();
 
-    virtual string genCode() { return ""; }
+    string genCode();
     string toString();
 };
 
@@ -128,6 +128,7 @@ public:
 
     void checkSemantic(DataType);
 
+    string genCode(DataType);
     string toString();
 };
 

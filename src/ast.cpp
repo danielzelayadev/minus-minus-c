@@ -2,12 +2,18 @@
 #include "statements.h"
 #include "context.h"
 #include "helpers.h"
+#include "memory.h"
 #include <stdio.h>
+#include <iostream>
 
 extern Context *ctx;
 extern VarTable *varTable;
 extern FunctionTable *functTable;
 extern map<string, string> data;
+
+extern Stack *callStack;
+
+extern int currScope;
 
 map<string, string> globals;
 
@@ -162,6 +168,15 @@ Declaration::Declaration(DataType dataType, vector<InitDeclarator*>*initDecList)
     this->initDecList = initDecList;
 }
 
+string Declaration::genCode() {
+    string code;
+
+    for (int i = 0; i < initDecList->size(); i++)
+        code += (*initDecList)[i]->genCode(dataType);
+
+    return code;
+}
+
 void Declaration::checkSemantic() {
     for (int i = 0; i < initDecList->size(); i++)
         (*initDecList)[i]->checkSemantic(dataType);
@@ -244,6 +259,37 @@ string FunctionDeclarator::toString() {
 InitDeclarator::InitDeclarator(Declarator* decl, Initializer* init) {
     this->declarator  = decl;
     this->initializer = init;
+}
+
+string InitDeclarator::genCode(DataType dt) {
+    string code;
+    string id = declarator->id;
+    ArrayDeclarator *arrDecl = dynamic_cast<ArrayDeclarator*>(declarator);
+
+    if (arrDecl) {
+        cout << "TODO: Support array declarations\n";
+    } else {
+        Expression *initExpr = initializer ? ((VarInitializer*)initializer)->expr : 0;
+
+        if (!currScope)
+            if (dt == INT)
+                newInt(id);
+            else
+                newChar(id);
+        else
+            if (dt == INT)
+                code += stackAlloc(4);
+            else
+                code += stackAlloc(1);
+        
+        
+
+        if (initExpr) {
+            cout << "TODO: Support init expressions\n";
+        }
+    }
+
+    return code;
 }
 
 void InitDeclarator::checkSemantic(DataType dt) {
