@@ -1,7 +1,7 @@
 #include "screen.h"
 .global mult
 .global divide
-.global rand_seed
+.global srand
 .global rand
 .global exp
 .global mod
@@ -42,7 +42,7 @@ mult:
 	jr $ra
 
 #$a0: seed
-rand_seed:
+srand:
 	la $t0, rnd_state
 	sw $a0, 0($t0) ##rnd_state[0]
 	addiu $t1, $a0, 1
