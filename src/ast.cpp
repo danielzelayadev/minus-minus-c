@@ -13,6 +13,8 @@ extern map<string, string> data;
 
 extern Stack *callStack;
 
+extern string globalInits;
+
 extern int currScope;
 
 map<string, string> globals;
@@ -128,19 +130,24 @@ FunctionDefinition::FunctionDefinition(DataType returnType, FunctionDeclarator* 
 
 string FunctionDefinition::genCode() {
     string code;
+    string childCode;
 
     code += declarator->genCode();
 
-    code += stackAlloc(4);
-    code += stackStoreW("$ra");
+    code += stackAlloc();
+    code += sw("$ra", 0, "$sp");
 
-    if (declarator->id == "main")
-        code += "\n" + clearScreen();
+    childCode = cb->genCode();
 
-    code += cb->genCode();
+    if (declarator->id == "main") {
+        code += globalInits.size() ? ("\n# global initializations\n" + globalInits) : "";
+        code += clearScreen() + "\n";
+    }
 
-    code += stackLoadW("$ra");
-    code += stackFree(4);
+    code += childCode;
+
+    code += lw("$ra", 0, "$sp");
+    code += stackFree();
 
     code += "\n";
 
@@ -285,7 +292,22 @@ string InitDeclarator::genCode(DataType dt) {
         callStack->push(id, dt == INT ? 4 : 1);
 
         if (initExpr) {
-            cout << "TODO: Support init expressions\n";
+            if (currScope) {
+                code += initExpr->genCode();
+                code += sw(toRegStr(initExpr->place), callStack->getBaseOffset(id), "$fp");
+            }
+            else {
+                int tmp = newTemp();
+                string tmpStr = toRegStr(tmp);
+                
+                globalInits += initExpr->genCode();
+                globalInits += la(tmpStr, id);
+                globalInits += sw(toRegStr(initExpr->place), 0, tmpStr);
+
+                freeTemp(tmp);
+            }
+
+            freeTemp(initExpr->place);
         }
     }
 
