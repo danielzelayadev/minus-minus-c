@@ -62,6 +62,15 @@ int Stack::getBaseOffset(string id) {
     return 0;
 }
 
+int Stack::getSizeOfVar(string id) {
+    for (int i = _stack->size() - 1; i >= 1; i--) {
+        StackData *sd = (*_stack)[i];
+        if (sd->id == id)
+            return sd->siz;
+    }
+    return -1;
+}
+
 string newString(string literal) {
     string label = newLabel("str");
 

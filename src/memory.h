@@ -26,6 +26,7 @@ public:
     void pushFrame();
     void popFrame();
     int getBaseOffset(string);
+    int getSizeOfVar(string);
 };
 
 string newString(string = "");
