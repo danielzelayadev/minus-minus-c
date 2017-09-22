@@ -7,3 +7,8 @@ src/tokens.h
 .vscode
 *.txt
 vmipssoc/src/main.S
+vmipssoc/src/*.o
+vmipssoc/src/*.elf*
+vmipssoc/src/mem_files
+vmipssoc/sim/data_mem.mif
+vmipssoc/sim/inst_mem.mif
