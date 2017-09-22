@@ -16,12 +16,17 @@ string clearScreen();
 string prologue();
 string epilogue();
 
-string stackStoreW(string = "$t0", int = 0);
-string stackStoreB(string = "$t0", int = 0);
-string stackLoadW(string  = "$t0", int = 0);
-string stackLoadB(string  = "$t0", int = 0);
 string stackAlloc(int = 4);
 string stackFree(int = 4);
+
+string la(string, string);
+
+string sw(string = "$t0", int = 0, string = "$fp");
+string sb(string = "$t0", int = 0, string = "$fp");
+string lw(string = "$t0", int = 0, string = "$fp");
+string lb(string = "$t0", int = 0, string = "$fp");
+
+string toRegStr(int, char = 't');
 
 string jumpReturn(Expression* = 0);
 

@@ -6,7 +6,7 @@
 int labelCount = 0;
 
 string newLabel(string prefix) {
-    return prefix + "__" + to_string(LABEL_HASH);
+    return prefix + "__" + to_string(LABEL_HASH).substr(0, 3);
 }
 
 string move(string rdst, string rsrc) {
@@ -14,7 +14,7 @@ string move(string rdst, string rsrc) {
 }
 
 string clearScreen() {
-    string code;
+    string code = "\n# screen setup\n";
 
     code += "li $a0, BRIGHT_WHITE\n";
     code += "li $a1, BLACK\n";
@@ -25,27 +25,23 @@ string clearScreen() {
 }
 
 string prologue() {
-    string code;
+    string code = "\n# prologue\n";
 
     code += stackAlloc();
-    code += stackStoreW("$fp");
+    code += sw("$fp", 0, "$sp");
     code += move("$fp", "$sp");
 
-    return code;
+    return code + "\n";
 }
 
 string epilogue() {
-    string code;
+    string code = "\n# epilogue\n";
 
     code += move("$sp", "$fp");
-    code += stackLoadW("$fp");
+    code += sw("$fp", 0, "$sp");
     code += stackFree();
 
-    return code;
-}
-
-string stackIO(string instr, string reg, int offset) {
-    return instr + " " + reg + ", " + to_string(offset) + "($sp)\n";
+    return code + "\n";
 }
 
 string stackAlloc(int howMuch) {
@@ -56,20 +52,34 @@ string stackFree(int howMuch) {
     return "addi $sp, $sp, " + to_string(howMuch) + "\n";
 }
 
-string stackStoreW(string reg, int offset) {
-    return stackIO("sw", reg, offset);
+string la(string reg, string id) {
+    return "la " + reg + ", " + id + "\n";
 }
 
-string stackStoreB(string reg, int offset) {
-    return stackIO("sb", reg, offset);
+string io(string op, string src, int offset, string dst) {
+    return op + " " + src + ", " + to_string(offset) + "(" + dst + ")\n";
 }
 
-string stackLoadW(string reg, int offset) {
-    return stackIO("lw", reg, offset);
+string sw(string src, int offset, string dst) {
+    return io("sw", src, offset, dst);
 }
 
-string stackLoadB(string reg, int offset) {
-    return stackIO("lb", reg, offset);
+string sb(string src, int offset, string dst) {
+    return io("sb", src, offset, dst);
+}
+
+string lw(string src, int offset, string dst) {
+    return io("lw", src, offset, dst);
+}
+
+string lb(string src, int offset, string dst) {
+    return io("lb", src, offset, dst);
+}
+
+string toRegStr(int i, char rt) {
+    string str = "$";
+    str.push_back(rt);
+    return str + to_string(i);
 }
 
 string jumpReturn(Expression *expr) {
