@@ -3,6 +3,20 @@
 #include "helpers.h"
 #include <iostream>
 
+extern Stack *callStack;
+
+string IdExpression::genAddrCode() {
+    string placeStr;
+    int stackOffset = callStack->getBaseOffset(id);
+
+    place = newTemp();
+    placeStr = toRegStr(place);
+    
+    return stackOffset ?
+        addi(placeStr, "$fp", stackOffset) :
+        la(placeStr, id);
+}
+
 string StringExpression::genCode() {
     place = newTemp();
 
