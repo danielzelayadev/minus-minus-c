@@ -100,6 +100,10 @@ void newChar(string id) {
     data[id] = de;
 }
 
+DataElementType getDataElementType(string id) {
+    return data[id].type;
+}
+
 int getFirstFreeTemp() {
     for (int i = 0; i < TEMPCOUNT; i++)
         if (!temps[i])

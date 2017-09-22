@@ -41,6 +41,7 @@ struct DataElement {
 string newString(string = "");
 void newInt(string = "");
 void newChar(string = "");
+DataElementType getDataElementType(string);
 int newTemp();
 void freeTemp(int);
 
