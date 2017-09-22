@@ -29,6 +29,15 @@ public:
     int getSizeOfVar(string);
 };
 
+enum DataElementType {
+    BYTE, WORD, ASCIIZ
+};
+
+struct DataElement {
+    string code;
+    DataElementType type;
+};
+
 string newString(string = "");
 void newInt(string = "");
 void newChar(string = "");

@@ -89,6 +89,32 @@ string toRegStr(int i, char rt) {
     return str + to_string(i);
 }
 
+string globalSection(map<string, string> *globals) {
+    string str;
+    map<string, string>::iterator it = globals->begin();
+
+    while (it != globals->end()) {
+        str += (it++)->second;
+        if (it !=globals->end())
+            str += "\n";
+    }
+
+    return str;
+}
+
+string dataSection(map<string, DataElement> *data) {
+    string str;
+    map<string, DataElement>::iterator it = data->begin();
+
+    while (it != data->end()) {
+        str += (it++)->second.code;
+        if (it != data->end())
+            str += "\n";
+    }
+
+    return str;
+}
+
 string jumpReturn(Expression *expr) {
     string code;
 

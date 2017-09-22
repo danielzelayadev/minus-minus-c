@@ -9,7 +9,7 @@
 #define TEMPCOUNT 10
 
 bool temps[TEMPCOUNT];
-map<string, string> data;
+map<string, DataElement> data;
 
 void Stack::push(string id, int siz) {
     _stack->push_back(new StackData(id, siz));
@@ -74,17 +74,30 @@ int Stack::getSizeOfVar(string id) {
 string newString(string literal) {
     string label = newLabel("str");
 
-    data[label] = label + ": .asciiz " + literal;
+    DataElement de = { 
+        label + ": .asciiz " + literal, 
+        ASCIIZ 
+    };
+
+    data[label] = de;
 
     return label;
 }
 
 void newInt(string id) {
-    data[id] = id + ": .word 0";
+    DataElement de = { 
+        id + ": .word 0", 
+        WORD
+    };
+    data[id] = de;
 }
 
 void newChar(string id) {
-    data[id] = id + ": .byte 0";
+    DataElement de = { 
+        id + ": .byte 0", 
+        BYTE 
+    };
+    data[id] = de;
 }
 
 int getFirstFreeTemp() {

@@ -9,7 +9,7 @@
 extern Context *ctx;
 extern VarTable *varTable;
 extern FunctionTable *functTable;
-extern map<string, string> data;
+extern map<string, DataElement> data;
 
 extern Stack *callStack;
 
@@ -17,7 +17,7 @@ extern string globalInits;
 
 extern int currScope;
 
-map<string, string> globals;
+extern map<string, string> globals;
 
 string mapType(int t) {
     switch (t) {
@@ -54,19 +54,6 @@ string join(vector<ASTNode*>* ls, string delim) {
     return str;
 }
 
-string joinMap(map<string, string> *mp, string delim) {
-    string str;
-    map<string, string>::iterator it = mp->begin();
-
-    while (it != mp->end()) {
-        str += (it++)->second;
-        if (it != mp->end())
-            str += delim;
-    }
-
-    return str;
-}
-
 void newGlobal(string name) {
     globals[name] = ".global " + name + "\n";
 }
@@ -85,11 +72,11 @@ string CompilationUnit::genCode() {
     code += "#include \"screen.h\"\n";
     code += "#include \"system.h\"\n\n";
 
-    code += joinMap(&globals, "\n") + "\n";
+    code += globalSection(&globals) + "\n";
     
     code += ".data\n\n";
 
-    code += joinMap(&data, "\n") + "\n\n";
+    code += dataSection(&data) + "\n\n";
     
     code += ".text\n\n";
 

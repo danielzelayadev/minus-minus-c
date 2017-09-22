@@ -14,6 +14,8 @@ FunctionTable *functTable;
 
 string globalInits;
 
+map<string, string> globals;
+
 Stack *callStack;
 int currScope;
 

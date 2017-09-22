@@ -2,6 +2,8 @@
 #define HELPERS
 
 #include <string>
+#include <map>
+#include "memory.h"
 
 using namespace std;
 
@@ -29,6 +31,9 @@ string lw(string = "$t0", int = 0, string = "$fp");
 string lb(string = "$t0", int = 0, string = "$fp");
 
 string toRegStr(int, char = 't');
+
+string globalSection(map<string, string>*);
+string dataSection(map<string, DataElement>*);
 
 string jumpReturn(Expression* = 0);
 
