@@ -1,5 +1,6 @@
 #include "helpers.h"
 #include "utils.h"
+#include <sstream>
 
 #define LABEL_HASH uniqueId(labelCount++, labelCount * 3, labelCount - 10, labelCount * 7)
 
@@ -50,6 +51,12 @@ string stackAlloc(int howMuch) {
 
 string stackFree(int howMuch) {
     return "addi $sp, $sp, " + to_string(howMuch) + "\n";
+}
+
+string addi(string dst, string a, int im) {
+    stringstream strm;
+    strm << "addi " << dst << ", " << a << ", " << im << endl;
+    return strm.str();
 }
 
 string la(string reg, string id) {

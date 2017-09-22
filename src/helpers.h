@@ -19,6 +19,8 @@ string epilogue();
 string stackAlloc(int = 4);
 string stackFree(int = 4);
 
+string addi(string, string, int);
+
 string la(string, string);
 
 string sw(string = "$t0", int = 0, string = "$fp");
