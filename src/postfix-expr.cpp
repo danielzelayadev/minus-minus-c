@@ -9,7 +9,7 @@ string FunctionCall::genCode() {
     for (int i = 0; i < args->size() && i < 4; i++) {
         Expression *expr = (*args)[i];
         code += expr->genCode();
-        code += move("$a" + to_string(i), "$t" + to_string(expr->place));
+        code += move(toRegStr(i, 'a'), toRegStr(expr->place));
         freeTemp(expr->place);
     }
 
@@ -17,7 +17,7 @@ string FunctionCall::genCode() {
 
     place = newTemp();
 
-    code += move("$t" + to_string(place), "$v0");
+    code += move(toRegStr(place), "$v0");
 
     return code;
 }
