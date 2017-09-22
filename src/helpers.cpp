@@ -24,6 +24,26 @@ string clearScreen() {
     return code;
 }
 
+string prologue() {
+    string code;
+
+    code += stackAlloc();
+    code += stackStoreW("$fp");
+    code += move("$fp", "$sp");
+
+    return code;
+}
+
+string epilogue() {
+    string code;
+
+    code += move("$sp", "$fp");
+    code += stackLoadW("$fp");
+    code += stackFree();
+
+    return code;
+}
+
 string stackIO(string instr, string reg, int offset) {
     return instr + " " + reg + ", " + to_string(offset) + "($sp)\n";
 }
