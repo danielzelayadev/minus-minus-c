@@ -15,6 +15,7 @@ public:
         this->arrExpr = arrExpr;
         this->accessExpr = accessExpr;
     }
+    bool isAssignable() { return true; }
     string toString() {
         return arrExpr->toString() + "[" + accessExpr->toString() + "]";
     }

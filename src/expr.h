@@ -7,6 +7,8 @@ class Expression : public ASTNode {
 public:
     int place;
     virtual string genCode() { return ""; }
+    virtual bool isAssignable() { return false; }
+    virtual string genAddrCode() { return ""; }
 };
 
 class ConditionalExpression : public Expression {
