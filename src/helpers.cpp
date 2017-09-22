@@ -39,7 +39,7 @@ string epilogue() {
     string code = "\n# epilogue\n";
 
     code += move("$sp", "$fp");
-    code += sw("$fp", 0, "$sp");
+    code += lw("$fp", 0, "$sp");
     code += stackFree();
 
     return code + "\n";
