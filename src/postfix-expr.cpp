@@ -21,3 +21,26 @@ string FunctionCall::genCode() {
 
     return code;
 }
+
+string PostIncrement::genCode() {
+    string code;
+    int addrPlace, evalPlace, tmp;
+
+    code += idExpr->genAddrCode();
+
+    addrPlace = idExpr->place;
+
+    code += idExpr->genCode();
+
+    place = idExpr->place;
+
+    tmp = newTemp();
+
+    code += addi(toRegStr(tmp), toRegStr(place), 1);
+    code += sw(toRegStr(tmp), 0, toRegStr(addrPlace));
+
+    freeTemp(tmp);
+    freeTemp(addrPlace);
+
+    return code;
+}

@@ -42,6 +42,7 @@ public:
 
     PostIncrement(Expression *idExpr) { this->idExpr = idExpr; }
 
+    string genCode();
     string toString() { return idExpr->toString() + "++"; }
 };
 
