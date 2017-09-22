@@ -7,6 +7,7 @@
 class name##Expression : public BinaryExpression { \
 public:                                \
     name##Expression(Expression *left, Expression *right, string op) : BinaryExpression(left, right, op){} \
+    string genCode(); \
     string toString() {\
         return left->toString() + " " + op + " " + right->toString();\
     }\
