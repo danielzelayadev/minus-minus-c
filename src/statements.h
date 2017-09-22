@@ -64,6 +64,7 @@ public:
         stepExpr = se;
         code     = cd;
     }
+    string genCode();
     string toString();
 };
 
