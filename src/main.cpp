@@ -12,6 +12,8 @@ Context *ctx;
 VarTable *varTable;
 FunctionTable *functTable;
 
+string globalInits;
+
 Stack *callStack;
 int currScope;
 
