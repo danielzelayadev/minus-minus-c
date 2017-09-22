@@ -20,6 +20,7 @@ public:
 
     IdExpression(string id) { this->id = id; }
     bool isAssignable() { return true; }
+    string genCode();
     string genAddrCode();
     string toString() { return id; }
 };
