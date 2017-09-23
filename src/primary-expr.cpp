@@ -5,13 +5,13 @@
 
 extern Stack *callStack;
 
-string IdExpression::genCode() {
+string IdExpression::genCode(bool preserve) {
     string code;
     string placeStr;
     int stackOffset = callStack->getBaseOffset(id);
 
-    place = newTemp();
-    placeStr = toRegStr(place);
+    GET_PLACE()
+    placeStr = toRegStr(place, preserve ? 's' : 't');
 
     if (stackOffset) {
         int siz = callStack->getSizeOfVar(id);
@@ -34,32 +34,47 @@ string IdExpression::genCode() {
     return code;
 }
 
-string IdExpression::genAddrCode() {
+string IdExpression::genAddrCode(bool preserve) {
+    string code;
     string placeStr;
     int stackOffset = callStack->getBaseOffset(id);
 
-    place = newTemp();
-    placeStr = toRegStr(place);
+    GET_PLACE()
+    placeStr = toRegStr(place, preserve ? 's' : 't');
     
     return stackOffset ?
-        addi(placeStr, "$fp", stackOffset) :
-        la(placeStr, id);
+        code + addi(placeStr, "$fp", stackOffset) :
+        code + la(placeStr, id);
 }
 
-string StringExpression::genCode() {
-    place = newTemp();
-
-    return la(toRegStr(place), newString(*literal));
-}
-
-string IntExpression::genCode() {
-    place = newTemp();
+string TimeExpression::genCode(bool preserve) {
+    string code;
     
-    return "li " + toRegStr(place) + ", " + *literal + "\n";
+    GET_PLACE()
+
+    return code + "lw " + toRegStr(place, preserve ? 's' : 't') + ", MS_COUNTER_REG_ADDR\n";
 }
 
-string CharExpression::genCode() {
-    place = newTemp();
+string StringExpression::genCode(bool preserve) {
+    string code;
+
+    GET_PLACE()
+
+    return code + la(toRegStr(place, preserve ? 's' : 't'), newString(*literal));
+}
+
+string IntExpression::genCode(bool preserve) {
+    string code;
+
+    GET_PLACE()
     
-    return "li " + toRegStr(place) + ", " + *literal + "\n";
+    return code + "li " + toRegStr(place, preserve ? 's' : 't') + ", " + *literal + "\n";
+}
+
+string CharExpression::genCode(bool preserve) {
+    string code;
+
+    GET_PLACE()
+    
+    return code + "li " + toRegStr(place, preserve ? 's' : 't') + ", " + *literal + "\n";
 }

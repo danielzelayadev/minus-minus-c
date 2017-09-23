@@ -8,7 +8,7 @@
 extern Stack *callStack;
 bool argsUsed[4];
 
-string FunctionCall::genCode() {
+string FunctionCall::genCode(bool preserve) {
     string code;
     bool origArgsUsed[4];
 
@@ -20,11 +20,7 @@ string FunctionCall::genCode() {
 
         code += expr->genCode();
 
-        if (origArgsUsed[i]) {
-            callStack->push("--" + argStr, 4);
-            code += stackAlloc();
-            code += sw(argStr, callStack->getBaseOffset("--"+argStr), "$fp");
-        }
+        if (origArgsUsed[i]) code += stackPushReg(i, 'a');
 
         code += move(argStr, toRegStr(expr->place));
 
@@ -35,7 +31,7 @@ string FunctionCall::genCode() {
 
     code += "jal " + ((IdExpression*)funcExpr)->id + "\n";
 
-    place = newTemp();
+    GET_PLACE()
 
     code += move(toRegStr(place), "$v0");
 
@@ -49,7 +45,7 @@ string FunctionCall::genCode() {
     return code;
 }
 
-string PostIncrement::genCode() {
+string PostIncrement::genCode(bool preserve) {
     string code;
     int addrPlace, evalPlace, tmp;
 
@@ -59,7 +55,12 @@ string PostIncrement::genCode() {
 
     code += idExpr->genCode();
 
-    place = idExpr->place;
+    place = preserve ? newSaved() : idExpr->place;
+    if (preserve) {
+        code += stackPushReg(place, 's');
+        code += move(toRegStr(place, 's'), toRegStr(idExpr->place));
+        freeTemp(idExpr->place);
+    }
 
     tmp = newTemp();
 

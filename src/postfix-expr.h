@@ -30,7 +30,7 @@ public:
         this->funcExpr = funcExpr;
         this->args = args;
     }
-    string genCode();
+    string genCode(bool = false);
     string toString() {
         return funcExpr->toString() + "(" + join((vector<ASTNode*>*)args, ", ") + ")";
     }
@@ -42,7 +42,7 @@ public:
 
     PostIncrement(Expression *idExpr) { this->idExpr = idExpr; }
 
-    string genCode();
+    string genCode(bool = false);
     string toString() { return idExpr->toString() + "++"; }
 };
 

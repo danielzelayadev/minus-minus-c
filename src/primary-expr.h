@@ -8,7 +8,7 @@ class name##Expression : public PrimaryExpression { \
 public:                                \
     string *literal;                    \
     name##Expression(string *literal) { this->literal = literal; } \
-    string genCode(); \
+    string genCode(bool = false); \
     string toString() { return *literal; } \
 };
 
@@ -20,9 +20,15 @@ public:
 
     IdExpression(string id) { this->id = id; }
     bool isAssignable() { return true; }
-    string genCode();
-    string genAddrCode();
+    string genCode(bool = false);
+    string genAddrCode(bool = false);
     string toString() { return id; }
+};
+
+class TimeExpression : public PrimaryExpression {
+public:
+    string genCode(bool = false);
+    string toString() { return "time(0)"; }
 };
 
 DEFINE_LITERAL_EXPR(Int)

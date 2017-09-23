@@ -4,25 +4,39 @@
 #include "postfix-expr.h"
 #include "primary-expr.h"
 
+#define GET_BINARY_PLACE() \
+if (preserve && leftIsSaved || \
+   !preserve && !leftIsSaved) place = left->place; \
+else if (preserve && !leftIsSaved) {\
+    place = newSaved(); \
+    code += stackPushReg(place, 's'); \
+    freeTemp(left->place); \
+} \
+else if (!preserve && leftIsSaved) { \
+    place = newTemp(); \
+    freeSaved(left->place); \
+}
+
 #define GENERIC_BINARY_CODEGEN(name, instr) \
-string name##Expression::genCode() { \
+string name##Expression::genCode(bool preserve) { \
     string code; \
-    code += left->genCode(); \
+    bool leftIsSaved = dynamic_cast<FunctionCall*>(right); \
+    code += left->genCode(leftIsSaved); \
     code += right->genCode(); \
-    place = left->place; \
-    code += string(instr) + " " + toRegStr(place) + ", " + \
-    toRegStr(left->place) + ", " + toRegStr(right->place) + "\n"; \
+    GET_BINARY_PLACE() \
+    code += string(instr) + " " + toRegStr(place, preserve ? 's' : 't') + ", " + \
+    toRegStr(left->place, leftIsSaved ? 's' : 't') + ", " + toRegStr(right->place) + "\n"; \
     freeTemp(right->place); \
     return code; \
 }
 
 #define MULTIPLICATIVE_BINARY_CODEGEN(name, func) \
-string name##Expression::genCode() { \
+string name##Expression::genCode(bool preserve) { \
     vector<Expression*> args; \
     args.push_back(left); \
     args.push_back(right); \
     FunctionCall fc(new IdExpression(func), &args);\
-    string code = fc.genCode();\
+    string code = fc.genCode(preserve);\
     place = fc.place; \
     return code; \
 }
@@ -33,27 +47,28 @@ BinaryExpression::BinaryExpression(Expression *left, Expression *right, string o
     this->op = op;
 }
 
-string AssignmentExpression::genCode() {
+string AssignmentExpression::genCode(bool preserve) {
     string code;
+    bool leftIsSaved = true;
 
-    code += left->genAddrCode();
+    code += left->genAddrCode(leftIsSaved);
     code += right->genCode();
 
-    place = left->place;
+    GET_BINARY_PLACE()
 
-    code += sw(toRegStr(right->place), 0, toRegStr(left->place));
-    code += move(toRegStr(place), toRegStr(right->place));
+    code += sw(toRegStr(right->place), 0, toRegStr(left->place, 's'));
+    code += move(toRegStr(place, preserve ? 's' : 't'), toRegStr(right->place));
 
     freeTemp(right->place);
 
     return code;
 }
 
-string CondAndExpression::genCode() {
+string CondAndExpression::genCode(bool preserve) {
     return "";
 }
 
-string CondOrExpression::genCode() {
+string CondOrExpression::genCode(bool preserve) {
     return "";
 }
 
