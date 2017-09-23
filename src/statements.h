@@ -51,6 +51,7 @@ public:
     Statement *code;
 
     WhileStatement(Expression *c, Statement *s) { condition = c; code = s; }
+    string genCode();
     string toString() { return "while (" + condition->toString() + ") " + code->toString(); }
 };
 
