@@ -1,4 +1,5 @@
 #include "statements.h"
+#include "binary-expr.h"
 #include "helpers.h"
 #include "memory.h"
 #include <iostream>
@@ -70,7 +71,10 @@ string ForStatement::toString() {
 
 string ExpressionStatement::genCode() {
     string code = expr->genCode();
-    freeTemp(expr->place);
+    if (dynamic_cast<AssignmentExpression*>(expr))
+        freeSaved(expr->place);
+    else
+        freeTemp(expr->place);
     return code;
 }
 
