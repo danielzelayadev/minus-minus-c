@@ -79,7 +79,7 @@
 %token KW_INT "int" KW_CHAR "char" KW_VOID "void"
 %token KW_FOR "for" KW_WHILE "while" KW_IF "if" KW_ELSE "else"
 %token KW_BREAK "break" KW_CONTINUE "continue" KW_RETURN "return"
-%token KW_SIZEOF "sizeof"
+%token KW_SIZEOF "sizeof" KW_TIME "time(0)"
 
 %token OP_INCREMENT "++" OP_DECREMENT "--"
 %token<char_ptr> OP_TIMESEQ "*=" OP_DIVEQ "/=" OP_MODEQ "%=" OP_ANDEQ "&=" OP_OREQ "|="
@@ -249,6 +249,7 @@ primary_expression
 	| HEX_INT            { $$ = new IntExpression(new string($1)); }
 	| CHAR_LIT           { $$ = new CharExpression(new string($1)); }
 	| STRING_LIT         { $$ = new StringExpression(new string($1)); }
+	| KW_TIME            { $$ = new TimeExpression(); }
 	| '(' expression ')' { $$ = $2; }
 ;
 

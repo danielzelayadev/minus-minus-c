@@ -38,6 +38,8 @@ IGNORE [ \n\t\v\f]
 
 "sizeof" { count(); return KW_SIZEOF; }
 
+"time(0)" { count(); return KW_TIME; }
+
 
 "++" { count(); return OP_INCREMENT; }
 "--" { count(); return OP_DECREMENT; }
