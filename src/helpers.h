@@ -40,7 +40,7 @@ string toRegStr(int, char = 't');
 string globalSection(map<string, string>*);
 string dataSection(map<string, DataElement>*);
 
-string jumpReturn(Expression* = 0);
+string jr(Expression* = 0);
 
 string stackPushReg(int, char = 't');
 

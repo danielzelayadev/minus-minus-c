@@ -150,3 +150,7 @@ string WhileStatement::genCode() {
 
     return code;
 }
+
+string ReturnStatement::genCode() {
+    return jr(expr);
+}

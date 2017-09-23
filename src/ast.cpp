@@ -138,7 +138,7 @@ string FunctionDefinition::genCode() {
 
     code += "\n";
 
-    code += jumpReturn();
+    code += jr();
 
     return code;
 }

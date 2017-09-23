@@ -1,6 +1,7 @@
 #include "helpers.h"
 #include "utils.h"
 #include "memory.h"
+#include "expr.h"
 #include <sstream>
 
 #define LABEL_HASH uniqueId(labelCount++, labelCount * 3, labelCount - 10, labelCount * 7)
@@ -118,14 +119,16 @@ string dataSection(map<string, DataElement> *data) {
     return str;
 }
 
-string jumpReturn(Expression *expr) {
+string jr(Expression *expr) {
     string code;
 
     if (expr) {
-
+        code += expr->genCode();
+        code += move("$v0", toRegStr(expr->place));
+        freeTemp(expr->place);
     }
 
-    return code + "jr $ra\n";
+    return code + epilogue() + "jr $ra\n";
 }
 
 string stackPushReg(int i, char rt) {
