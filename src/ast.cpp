@@ -260,6 +260,8 @@ string InitDeclarator::genCode(DataType dt) {
     string id = declarator->id;
     ArrayDeclarator *arrDecl = dynamic_cast<ArrayDeclarator*>(declarator);
 
+    if (dynamic_cast<FunctionDeclarator*>(declarator)) return "";
+
     if (arrDecl) {
         cout << "TODO: Support array declarations\n";
     } else {
