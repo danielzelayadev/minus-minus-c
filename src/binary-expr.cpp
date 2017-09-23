@@ -1,6 +1,8 @@
 #include "binary-expr.h"
 #include "memory.h"
 #include "helpers.h"
+#include "postfix-expr.h"
+#include "primary-expr.h"
 
 #define GENERIC_BINARY_CODEGEN(name, instr) \
 string name##Expression::genCode() { \
@@ -16,15 +18,12 @@ string name##Expression::genCode() { \
 
 #define MULTIPLICATIVE_BINARY_CODEGEN(name, func) \
 string name##Expression::genCode() { \
-    string code; \
-    code += left->genCode(); \
-    code += right->genCode(); \
-    place = left->place; \
-    code += move("$a0", toRegStr(left->place)); \
-    code += move("$a1", toRegStr(right->place)); \
-    code += "jal " + string(func) + "\n"; \
-    code += move(toRegStr(place), "$v0"); \
-    freeTemp(right->place); \
+    vector<Expression*> args; \
+    args.push_back(left); \
+    args.push_back(right); \
+    FunctionCall fc(new IdExpression(func), &args);\
+    string code = fc.genCode();\
+    place = fc.place; \
     return code; \
 }
 
@@ -73,5 +72,5 @@ GENERIC_BINARY_CODEGEN(Sum, "add")
 GENERIC_BINARY_CODEGEN(Sub, "sub")
 
 MULTIPLICATIVE_BINARY_CODEGEN(Mul, "mult")
-MULTIPLICATIVE_BINARY_CODEGEN(Div, "divide")
+MULTIPLICATIVE_BINARY_CODEGEN(Div, "div")
 MULTIPLICATIVE_BINARY_CODEGEN(Mod, "mod")

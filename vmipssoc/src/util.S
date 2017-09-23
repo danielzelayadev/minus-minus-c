@@ -7,6 +7,7 @@
 .global mod
 .global input
 .global dbgp
+.global div
 
 .data
 rnd_state: .word 0, 0, 0, 0
@@ -14,6 +15,21 @@ division:  .word 0
 remainder: .word 0
 
 .text
+
+div:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+
+	la $a2, division
+	la $a3, remainder
+	jal divide
+
+	la $t0, division
+	lw $v0, 0($t0)
+
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
 
 divide:
     move $t1, $zero
