@@ -20,12 +20,15 @@ div:
 	addi $sp, $sp, -4
 	sw $ra, 0($sp)
 
-	la $a2, division
-	la $a3, remainder
-	jal divide
+	move $v0, $zero
+.div_while:
+    slt $t0, $a0, $a1
+    bnez $t0, .end_div_while
+    sub $a0, $a0, $a1
+    addi $v0, $v0, 1
+    j .div_while
 
-	la $t0, division
-	lw $v0, 0($t0)
+.end_div_while:
 
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
@@ -97,16 +100,22 @@ rand:
 	jr $ra
 
 mod:
-	addi $sp, $sp, -4
-	sw $ra, 0($sp)
+	# addi $sp, $sp, -4
+	# sw $ra, 0($sp)
 
-	la $a3, remainder
-	jal divide
+	move $t1, $zero
+	move $v0, $a0
+.mod_while:
+    slt $t0, $v0, $a1
+    bnez $t0, .end_mod_while
+    sub $v0, $v0, $a1
+    addi $t1, $t1, 1
+    j .mod_while
 
-	lw $v0, remainder
-	
-	lw $ra, 0($sp)
-	addi $sp, $sp, 4
+.end_mod_while:
+
+	# lw $ra, 0($sp)
+	# addi $sp, $sp, 4
 	jr $ra
 
 dbgp:
