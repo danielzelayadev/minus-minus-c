@@ -5,10 +5,11 @@
 #include <stdlib.h>
 #include <map>
 
-#define NOTEMPS -1
+#define NOREGS -1
 #define TEMPCOUNT 10
+#define SAVEDCOUNT 8
 
-bool temps[TEMPCOUNT];
+bool temps[TEMPCOUNT], saved[SAVEDCOUNT];
 map<string, DataElement> data;
 
 void Stack::push(string id, int siz) {
@@ -108,14 +109,14 @@ int getFirstFreeTemp() {
     for (int i = 0; i < TEMPCOUNT; i++)
         if (!temps[i])
             return i;      
-    return NOTEMPS;
+    return NOREGS;
 }
 
 int newTemp() {
     int freeTemp = getFirstFreeTemp();
 
-    if (freeTemp == NOTEMPS) {
-        cerr << "Whoops! Looks like we ran out of registers X_X\n";
+    if (freeTemp == NOREGS) {
+        cerr << "Whoops! Looks like we ran out of temporary registers X_X\n";
         exit(1);
     }
 
@@ -126,4 +127,28 @@ int newTemp() {
 
 void freeTemp(int i) {
     temps[i] = false;
+}
+
+int getFirstFreeSaved() {
+    for (int i = 0; i < SAVEDCOUNT; i++)
+        if (!saved[i])
+            return i;      
+    return NOREGS;
+}
+
+int newSaved() {
+    int freeSaved = getFirstFreeSaved();
+
+    if (freeSaved == NOREGS) {
+        cerr << "Whoops! Looks like we ran out of saved registers X_X\n";
+        exit(1);
+    }
+
+    saved[freeSaved] = true;
+
+    return freeSaved;
+}
+
+void freeSaved(int i) {
+    saved[i] = false;
 }

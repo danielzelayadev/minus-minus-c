@@ -44,5 +44,7 @@ void newChar(string = "");
 DataElementType getDataElementType(string);
 int newTemp();
 void freeTemp(int);
+int newSaved();
+void freeSaved(int);
 
 #endif
