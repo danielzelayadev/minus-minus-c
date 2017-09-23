@@ -7,6 +7,11 @@
 
 using namespace std;
 
+#define GET_PLACE() \
+place = preserve ? newSaved() : newTemp(); \
+if (preserve) \
+    code += stackPushReg(place, 's');
+
 class Expression;
 
 string newLabel(string = "label");
@@ -36,5 +41,7 @@ string globalSection(map<string, string>*);
 string dataSection(map<string, DataElement>*);
 
 string jumpReturn(Expression* = 0);
+
+string stackPushReg(int, char = 't');
 
 #endif // !HELPERS

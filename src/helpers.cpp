@@ -1,10 +1,13 @@
 #include "helpers.h"
 #include "utils.h"
+#include "memory.h"
 #include <sstream>
 
 #define LABEL_HASH uniqueId(labelCount++, labelCount * 3, labelCount - 10, labelCount * 7)
 
 int labelCount = 0;
+
+extern Stack *callStack;
 
 string newLabel(string prefix) {
     return prefix + "__" + to_string(LABEL_HASH).substr(0, 3);
@@ -123,4 +126,14 @@ string jumpReturn(Expression *expr) {
     }
 
     return code + "jr $ra\n";
+}
+
+string stackPushReg(int i, char rt) {
+    string code, reg = toRegStr(i, rt);
+
+    callStack->push("--"+reg, 4);
+    code += stackAlloc();
+    code += sw(reg, 0, "$sp");
+
+    return code;
 }
