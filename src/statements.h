@@ -41,6 +41,7 @@ public:
         this->code = code;
         this->elseStmt = elseStmt;
     }
+    string genCode();
     string toString();
 };
 
