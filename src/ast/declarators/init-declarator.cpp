@@ -33,13 +33,14 @@ string InitDeclarator::genCode(DataType dt) {
                 newInt(id);
             else
                 newChar(id);
-        else
+        else {
             if (dt == INT)
                 code += stackAlloc(4);
             else
                 code += stackAlloc(1);
-        
-        callStack->push(id, dt == INT ? 4 : 1);
+                
+            callStack->push(id, dt == INT ? 4 : 1);
+        }
 
         if (initExpr) {
             if (currScope) {
