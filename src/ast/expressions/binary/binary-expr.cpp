@@ -8,12 +8,12 @@
 if (preserve && leftIsSaved || \
    !preserve && !leftIsSaved) place = left->place; \
 else if (preserve && !leftIsSaved) {\
-    useSaved(&place); \
+    code += useSaved(&place); \
     freeTemp(left->place); \
 } \
 else if (!preserve && leftIsSaved) { \
     place = newTemp(); \
-    releaseSaved(left->place); \
+    freeSaved(left->place); \
 }
 
 #define GENERIC_BINARY_CODEGEN(name, instr) \
@@ -56,6 +56,9 @@ string AssignmentExpression::genCode(bool preserve) {
     GET_BINARY_PLACE()
 
     code += sw(toRegStr(right->place), 0, toRegStr(left->place, 's'));
+
+    if (!preserve) code += lreg(left->place, 's');
+
     code += move(toRegStr(place, preserve ? 's' : 't'), toRegStr(right->place));
 
     freeTemp(right->place);
