@@ -13,7 +13,7 @@ $ make
 ### Compile a Sample
 
 ```
-$ ./compile samples/[sample-name]
+$ ./compile [sample-path]
 ```
 
 ### Run the Compiled Sample
@@ -25,7 +25,7 @@ $ ./run
 ### Test a Sample
 
 ```
-$ ./test samples/[sample-name]
+$ ./test [sample-path]
 ```
 
 ### Test All Samples
