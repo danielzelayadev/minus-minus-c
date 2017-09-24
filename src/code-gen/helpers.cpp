@@ -128,7 +128,7 @@ string jr(Expression *expr) {
         freeTemp(expr->place);
     }
 
-    return code + epilogue() + "jr $ra\n";
+    return code + "jr $ra\n";
 }
 
 string stackPushReg(int i, char rt) {
