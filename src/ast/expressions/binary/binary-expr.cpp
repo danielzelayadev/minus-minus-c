@@ -8,13 +8,12 @@
 if (preserve && leftIsSaved || \
    !preserve && !leftIsSaved) place = left->place; \
 else if (preserve && !leftIsSaved) {\
-    place = newSaved(); \
-    code += stackPushReg(place, 's'); \
+    useSaved(&place); \
     freeTemp(left->place); \
 } \
 else if (!preserve && leftIsSaved) { \
     place = newTemp(); \
-    freeSaved(left->place); \
+    releaseSaved(left->place); \
 }
 
 #define GENERIC_BINARY_CODEGEN(name, instr) \
