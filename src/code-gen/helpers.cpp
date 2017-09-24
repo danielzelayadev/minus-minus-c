@@ -186,8 +186,6 @@ string functionEpilogue(bool pop) {
 
     code += "jr $ra\n";
 
-    currParamCount = 0;
-
     return code;
 }
 

@@ -44,6 +44,8 @@ string FunctionDefinition::genCode() {
 
     code += functionEpilogue(currParamCount);
 
+    currParamCount = 0;
+
     return code;
 }
 
