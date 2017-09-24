@@ -1,9 +1,9 @@
 bin
 obj
 debug
-src/lexer.cpp
-src/parser.cpp
-src/tokens.h
+src/flexson/lexer.cpp
+src/flexson/parser.cpp
+src/flexson/tokens.h
 .vscode
 *.txt
 vmipssoc/src/main.S
