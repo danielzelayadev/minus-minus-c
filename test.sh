@@ -26,6 +26,10 @@ if [ "$#" -lt 1 ]; then
     ./bin/mmc samples/Globals.c vmipssoc/src/main.S
     cd vmipssoc/src
     make run
+    cd ../..
+    ./bin/mmc samples/MultipleFunctions.c vmipssoc/src/main.S
+    cd vmipssoc/src
+    make run
 else
     ./bin/mmc "$1" vmipssoc/src/main.S
     cd vmipssoc/src
