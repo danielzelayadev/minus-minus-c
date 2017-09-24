@@ -1,23 +1,17 @@
-CPP_SRC =  $(PARSER) $(LEXER) src/main.cpp src/expr.cpp
-CPP_SRC += src/unary-expr.cpp src/binary-expr.cpp src/primary-expr.cpp
-CPP_SRC += src/postfix-expr.cpp src/statements.cpp src/symbol-table.cpp src/context.cpp
-CPP_SRC += src/errors.cpp src/helpers.cpp src/memory.cpp src/utils.cpp
-CPP_SRC += src/compilation-unit.cpp src/declaration.cpp src/function-definition.cpp
-CPP_SRC += src/declarators.cpp src/init-declarator.cpp src/initializers.cpp
-CPP_SRC += src/parameter.cpp
+CPP_SRC = $(PARSER) $(LEXER) $(shell find . -name "*.cpp" -not -path "./src/flexson/*")
 
-LEXER = src/lexer.cpp
-PARSER = src/parser.cpp
+LEXER = src/flexson/lexer.cpp
+PARSER = src/flexson/parser.cpp
 
-TOKENS = src/tokens.h
+TOKENS = src/flexson/tokens.h
 
 REPORT = debug/state.txt
 
-FLEX_SRC = src/tokens.l
+FLEX_SRC = src/flexson/tokens.l
 
-BISON_SRC = src/grammar.y
+BISON_SRC = src/flexson/grammar.y
 
-OBJ_FILES = ${CPP_SRC:src/%.cpp=obj/%.o}
+OBJ_FILES = $(patsubst ./src/%.cpp, obj/%.o, $(CPP_SRC))
 
 CXXFLAGS=-std=c++11
 
@@ -35,12 +29,13 @@ $(PARSER): $(BISON_SRC)
 	bison --defines=$(TOKENS) -v --report-file=$(REPORT) -o $@ $<
 
 obj/%.o: src/%.cpp
-	mkdir -p obj
+	mkdir -p $(@D)
 	g++ -std=c++11 -w -g -c -o $@ $<
 
 $(TARGET): $(OBJ_FILES)
 	g++ -std=c++11 -w -g -o $@ $^
 
 clean:
+	rm -rf obj/**/
 	rm -f bin/* obj/* debug/*
 	rm -f $(LEXER) $(PARSER) $(TOKENS) $(OUTPUT)

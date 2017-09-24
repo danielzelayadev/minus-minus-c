@@ -1,10 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
-#include "compilation-unit.h"
-#include "context.h"
-#include "memory.h"
-#include "errors.h"
+#include "ast/ast.h"
+#include "semantic/context.h"
+#include "semantic/errors.h"
+#include "code-gen/memory.h"
 
 using namespace std;
 
