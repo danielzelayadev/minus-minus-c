@@ -14,6 +14,7 @@ if (preserve) \
 
 class Expression;
 class ASTNode;
+class Parameter;
 
 string newLabel(string = "label");
 
@@ -40,6 +41,9 @@ string toRegStr(int, char = 't');
 
 string globalSection(map<string, string>*);
 string dataSection(map<string, DataElement>*);
+
+string functionPrologue(vector<Parameter*> *params);
+string functionEpilogue(bool = false);
 
 string jr(Expression* = 0);
 

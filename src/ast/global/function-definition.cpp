@@ -1,9 +1,14 @@
 #include "function-definition.h"
+#include "../../code-gen/memory.h"
 #include "../../code-gen/helpers.h"
 #include "../declarators.h"
 #include "../statements.h"
+#include "../misc.h"
 
 extern string globalInits;
+extern Stack *callStack;
+
+int currParamCount;
 
 FunctionDefinition::FunctionDefinition(FunctionDeclarator* declarator, CodeBlock* cb) {
     this->returnType = INT;
@@ -20,11 +25,13 @@ FunctionDefinition::FunctionDefinition(DataType returnType, FunctionDeclarator* 
 string FunctionDefinition::genCode() {
     string code;
     string childCode;
+    FunctionDeclarator *decl = (FunctionDeclarator*)declarator;
 
-    code += declarator->genCode();
+    currParamCount = decl->params->size();
 
-    code += stackAlloc();
-    code += sw("$ra", 0, "$sp");
+    code += decl->genCode();
+
+    code += functionPrologue(decl->params);
 
     childCode = cb->genCode();
 
@@ -35,12 +42,7 @@ string FunctionDefinition::genCode() {
 
     code += childCode;
 
-    code += lw("$ra", 0, "$sp");
-    code += stackFree();
-
-    code += "\n";
-
-    code += jr();
+    code += functionEpilogue(currParamCount);
 
     return code;
 }

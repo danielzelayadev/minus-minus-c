@@ -3,12 +3,15 @@
 #include "memory.h"
 #include "../ast/ast.h"
 #include <sstream>
+#include "../ast/misc.h"
 
 #define LABEL_HASH uniqueId(labelCount++, labelCount * 3, labelCount - 10, labelCount * 7)
 
 #define REG_PREFIX "--"
 
 int labelCount = 0;
+
+extern int currParamCount;
 
 extern Stack *callStack;
 
@@ -121,6 +124,73 @@ string dataSection(map<string, DataElement> *data) {
     return str;
 }
 
+string pushParams(vector<Parameter*> *params) {
+    string code;
+
+    if (params->size()) {
+        code += "\n# Arg Pushing";
+        callStack->pushFrame();
+        code += prologue();
+    }
+
+    for (int i = 0; i < params->size(); i++) {
+        string reg = toRegStr(i, 'a');
+        Parameter *param = (*params)[i];
+        int siz = param->dataType == CHAR ? 1 : 4;
+        callStack->push(param->declarator->id, siz);
+        code += stackAlloc(siz);
+        code += siz == 4 ? sw(reg, 0, "$sp") : sb(reg, 0, "$sp");
+    }
+
+    return code;
+}
+
+string pushReturnAddr() {
+    string code;
+
+    code += stackAlloc();
+    code += sw("$ra", 0, "$sp");
+
+    return code;
+}
+
+string popReturnAddr() {
+    string code;
+
+    code += lw("$ra", 0, "$sp");
+    code += stackFree();
+
+    return code;
+}
+
+string functionPrologue(vector<Parameter*> *params) {
+    string code;
+
+    code += pushReturnAddr();
+    code += pushParams(params);
+
+    return code;
+}
+
+string functionEpilogue(bool pop) {
+    string code;
+
+    if (pop) {
+        callStack->popFrame();
+        code += epilogue();
+    }
+
+    code += popReturnAddr();
+
+    code += "\n";
+
+    code += "jr $ra\n";
+
+    currParamCount = 0;
+
+    return code;
+}
+
 string jr(Expression *expr) {
     string code;
 
@@ -130,7 +200,10 @@ string jr(Expression *expr) {
         freeTemp(expr->place);
     }
 
-    return code + "jr $ra\n";
+    code += epilogue();
+    code += functionEpilogue(currParamCount);
+
+    return code;
 }
 
 string stackPushReg(int i, char rt) {
