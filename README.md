@@ -16,13 +16,19 @@ $ make
 $ ./compile samples/[sample-name]
 ```
 
-### Run Compiled Samples
+### Run the Compiled Sample
 
 ```
 $ ./run
 ```
 
-### Run Tests
+### Test a Sample
+
+```
+$ ./test samples/[sample-name]
+```
+
+### Test All Samples
 
 ```
 $ ./test
