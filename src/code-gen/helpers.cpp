@@ -6,6 +6,8 @@
 
 #define LABEL_HASH uniqueId(labelCount++, labelCount * 3, labelCount - 10, labelCount * 7)
 
+#define REG_PREFIX "--"
+
 int labelCount = 0;
 
 extern Stack *callStack;
@@ -134,7 +136,7 @@ string jr(Expression *expr) {
 string stackPushReg(int i, char rt) {
     string code, reg = toRegStr(i, rt);
 
-    callStack->push("--"+reg, 4);
+    callStack->push(REG_PREFIX+reg, 4);
     code += stackAlloc();
     code += sw(reg, 0, "$sp");
 
@@ -174,4 +176,19 @@ string join(vector<ASTNode*>* ls, string delim) {
     }
 
     return str;
+}
+
+string lreg(int i, char rt) {
+    string reg = toRegStr(i, rt);
+    return lw(reg, callStack->getStackOffset(REG_PREFIX+reg), "$sp");
+}
+
+string useSaved(int *place) {
+    *place = newSaved();
+    return stackPushReg(*place, 's');
+}
+
+string releaseSaved(int place) {
+    freeSaved(place);
+    return lreg(place, 's');
 }

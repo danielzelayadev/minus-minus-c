@@ -48,4 +48,9 @@ string stackPushReg(int, char = 't');
 string mapType(int);
 string join(vector<ASTNode*>*, string);
 
+string lreg(int, char = 't');
+
+string useSaved(int*);
+string releaseSaved(int);
+
 #endif // !HELPERS
