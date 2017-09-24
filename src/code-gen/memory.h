@@ -25,6 +25,7 @@ public:
     void push(string, int);
     void pushFrame();
     void popFrame();
+    int getStackOffset(string);
     int getBaseOffset(string);
     int getSizeOfVar(string);
 };

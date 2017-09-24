@@ -65,6 +65,23 @@ int Stack::getBaseOffset(string id) {
     return 0;
 }
 
+int Stack::getStackOffset(string id) {
+    int offset = 0;
+
+    if (ebpPos == -1) return -1;
+
+    for (int i = _stack->size()-1; i >= 1; i--) {
+        StackData *sd = (*_stack)[i];
+        
+        if (sd->id == id)
+            return offset;
+
+        offset += sd->siz;
+    }
+
+    return -1;
+}
+
 int Stack::getSizeOfVar(string id) {
     for (int i = _stack->size() - 1; i >= 1; i--) {
         StackData *sd = (*_stack)[i];

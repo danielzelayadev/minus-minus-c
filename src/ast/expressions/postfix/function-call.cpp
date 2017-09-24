@@ -36,7 +36,7 @@ string FunctionCall::genCode(bool preserve) {
 
     for (int i = 0; origArgsUsed[i]; i++) {
         string argStr = toRegStr(i, 'a');
-        code += lw(argStr, callStack->getBaseOffset("--"+argStr), "$fp");
+        code += lw(argStr, callStack->getStackOffset("--"+argStr), "$sp");
     }
 
     memcpy(argsUsed, origArgsUsed, sizeof(bool)*4);
