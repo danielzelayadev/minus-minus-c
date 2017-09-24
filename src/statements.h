@@ -2,6 +2,10 @@
 #define STATEMENT
 
 #include "expr.h"
+#include "declaration.h"
+#include <vector>
+
+using namespace std;
 
 class Statement : public ASTNode {
 public:

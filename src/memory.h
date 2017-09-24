@@ -39,6 +39,7 @@ struct DataElement {
 };
 
 string newString(string = "");
+void newGlobal(string);
 void newInt(string = "");
 void newChar(string = "");
 DataElementType getDataElementType(string);

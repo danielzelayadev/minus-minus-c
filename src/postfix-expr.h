@@ -2,6 +2,9 @@
 #define POSTFIXEXPR
 
 #include "expr.h"
+#include <vector>
+
+using namespace std;
 
 string join(vector<ASTNode*>*, string);
 

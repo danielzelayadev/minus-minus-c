@@ -13,6 +13,7 @@ if (preserve) \
     code += stackPushReg(place, 's');
 
 class Expression;
+class ASTNode;
 
 string newLabel(string = "label");
 
@@ -43,5 +44,8 @@ string dataSection(map<string, DataElement>*);
 string jr(Expression* = 0);
 
 string stackPushReg(int, char = 't');
+
+string mapType(int);
+string join(vector<ASTNode*>*, string);
 
 #endif // !HELPERS

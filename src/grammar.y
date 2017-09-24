@@ -1,4 +1,11 @@
 %code requires {
+	#include "compilation-unit.h"
+	#include "declaration.h"
+	#include "declarators.h"
+	#include "init-declarator.h"
+	#include "initializers.h"
+	#include "parameter.h"
+	#include "function-definition.h"
 	#include "unary-expr.h"
 	#include "binary-expr.h"
 	#include "postfix-expr.h"
@@ -9,6 +16,7 @@
 %{
     #include <stdio.h>
 	#include "unary-expr.h"
+	#include "compilation-unit.h"
 
 	int yylex();
 

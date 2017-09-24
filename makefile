@@ -1,7 +1,10 @@
-CPP_SRC =  $(PARSER) $(LEXER) src/main.cpp src/ast.cpp src/expr.cpp
+CPP_SRC =  $(PARSER) $(LEXER) src/main.cpp src/expr.cpp
 CPP_SRC += src/unary-expr.cpp src/binary-expr.cpp src/primary-expr.cpp
 CPP_SRC += src/postfix-expr.cpp src/statements.cpp src/symbol-table.cpp src/context.cpp
 CPP_SRC += src/errors.cpp src/helpers.cpp src/memory.cpp src/utils.cpp
+CPP_SRC += src/compilation-unit.cpp src/declaration.cpp src/function-definition.cpp
+CPP_SRC += src/declarators.cpp src/init-declarator.cpp src/initializers.cpp
+CPP_SRC += src/parameter.cpp
 
 LEXER = src/lexer.cpp
 PARSER = src/parser.cpp

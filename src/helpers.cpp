@@ -140,3 +140,38 @@ string stackPushReg(int i, char rt) {
 
     return code;
 }
+
+string mapType(int t) {
+    switch (t) {
+        case INT:
+            return "int";
+        case CHAR:
+            return "char";
+        case VOID:
+            return "void";
+        case INT_PTR:
+            return "int *";
+        case CHAR_PTR:
+            return "char *";
+        case VOID_PTR:
+            return "void *";
+        default:
+            return "";
+    }
+}
+
+string join(vector<ASTNode*>* ls, string delim) {
+    string str;
+    int last = ls->size() - 1;
+
+    for (int i = 0; i < ls->size(); i++) {
+        ASTNode *node = (*ls)[i];
+
+        str += node->toString();
+
+        if (i != last)
+            str += delim;
+    }
+
+    return str;
+}

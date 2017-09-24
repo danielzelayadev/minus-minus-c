@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
-#include "ast.h"
+#include "compilation-unit.h"
 #include "context.h"
 #include "memory.h"
 #include "errors.h"
@@ -14,7 +14,7 @@ FunctionTable *functTable;
 
 string globalInits;
 
-map<string, string> globals;
+extern map<string, string> globals;
 
 Stack *callStack;
 int currScope;

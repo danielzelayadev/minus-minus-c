@@ -12,6 +12,8 @@
 bool temps[TEMPCOUNT], saved[SAVEDCOUNT];
 map<string, DataElement> data;
 
+map<string, string> globals;
+
 void Stack::push(string id, int siz) {
     _stack->push_back(new StackData(id, siz));
 }
@@ -151,4 +153,8 @@ int newSaved() {
 
 void freeSaved(int i) {
     saved[i] = false;
+}
+
+void newGlobal(string name) {
+    globals[name] = ".global " + name + "\n";
 }
