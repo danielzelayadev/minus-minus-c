@@ -28,6 +28,7 @@ public:
     int getStackOffset(string);
     int getBaseOffset(string);
     int getSizeOfVar(string);
+    void printStack();
 };
 
 enum DataElementType {

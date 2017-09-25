@@ -93,6 +93,17 @@ int Stack::getSizeOfVar(string id) {
     return -1;
 }
 
+void Stack::printStack() {
+    cout << "\n===================\n";
+    for (int i = _stack->size() - 1; i >= 0; i--) {
+        StackData *sd = (*_stack)[i];
+        if (isNumber(sd->id))
+            cout << "===================\n";
+        cout << sd->id << " === " << sd->siz << endl;
+    }
+    cout << endl;
+}
+
 string newString(string literal) {
     string label = newLabel("str");
 
