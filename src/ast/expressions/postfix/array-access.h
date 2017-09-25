@@ -13,6 +13,7 @@ public:
     }
     int size();
     bool isAssignable() { return true; }
+    string genCode(bool = false);
     string genAddrCode(bool = false);
     string toString() {
         return arrExpr->toString() + "[" + accessExpr->toString() + "]";

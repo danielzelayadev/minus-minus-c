@@ -40,11 +40,13 @@ string InitDeclarator::genCode(DataType dt) {
                 newInt(id, dims);
             else
                 newChar(id, dims);
-        else
+        else {
+            code += "# " + string((dt == INT ? "int " : "char ")) + id +  "[" + to_string(dims) +  "]\n";
             if (dt == INT)
                 code += allocIntArray(id, dims);
             else
                 code += allocCharArray(id, dims);
+        }
 
         if (initializer) {
             arrInit = arrInit ? arrInit : ((ArrayInitializer*)initializer);
@@ -60,7 +62,9 @@ string InitDeclarator::genCode(DataType dt) {
                     Expression *expr = (*initExprs)[i];
                     globalInits += expr->genCode();
 
-                    globalInits += sw(toRegStr(expr->place), offset, baseStr);
+                    globalInits += dt == INT ?
+                    sw(toRegStr(expr->place), offset, baseStr) :
+                    sb(toRegStr(expr->place), offset, baseStr);
 
                     freeTemp(expr->place);
                 }
@@ -68,23 +72,17 @@ string InitDeclarator::genCode(DataType dt) {
                 freeTemp(baseAddr);
             }
             else {
-                int baseAddr;
-                code += useSaved(&baseAddr);
-                string baseStr = toRegStr(baseAddr, 's');
-
-                code += lw(baseStr, callStack->getBaseOffset(id), "$fp");
-
-                for (int i = 0; i < initExprs->size(); i++) {
-                    int offset = i * (dt == INT ? 4 : 1);
+               for (int i = 0; i < initExprs->size(); i++) {
                     Expression *expr = (*initExprs)[i];
+                    
                     code += expr->genCode();
-
-                    code += sw(toRegStr(expr->place), offset, baseStr);
+                    
+                    code += dt == INT ?
+                    sw(toRegStr(expr->place), callStack->getBaseOffset(arrayAccessToStr(id, i)), "$fp") :
+                    sb(toRegStr(expr->place), callStack->getBaseOffset(arrayAccessToStr(id, i)), "$fp");
 
                     freeTemp(expr->place);
                 }
-
-                code += releaseSaved(baseAddr);
             }
         }
     } else {
@@ -96,6 +94,7 @@ string InitDeclarator::genCode(DataType dt) {
             else
                 newChar(id);
         else {
+            code += "# " + string((dt == INT ? "int " : "char ")) + id + "\n";
             if (dt == INT)
                 code += stackAlloc(4);
             else
@@ -107,7 +106,9 @@ string InitDeclarator::genCode(DataType dt) {
         if (initExpr) {
             if (currScope) {
                 code += initExpr->genCode();
-                code += sw(toRegStr(initExpr->place), callStack->getBaseOffset(id), "$fp");
+                code += dt == INT ?
+                sw(toRegStr(initExpr->place), callStack->getBaseOffset(id), "$fp") :
+                sb(toRegStr(initExpr->place), callStack->getBaseOffset(id), "$fp");
             }
             else {
                 int tmp = newTemp();
@@ -115,7 +116,9 @@ string InitDeclarator::genCode(DataType dt) {
                 
                 globalInits += initExpr->genCode();
                 globalInits += la(tmpStr, id);
-                globalInits += sw(toRegStr(initExpr->place), 0, tmpStr);
+                globalInits += dt == INT ?
+                sw(toRegStr(initExpr->place), 0, tmpStr) :
+                sb(toRegStr(initExpr->place), 0, tmpStr);
 
                 freeTemp(tmp);
             }
