@@ -58,8 +58,8 @@ chmod +x test.sh
 
 ## Running the tests
 
-This project uses snapshot tests. This means that the output code of the compiled will be tested against its corresponding snapshot in the `./snapshots` folder. The snapshot is the expected code, and the compiled code is the actual code. If they do not match, the test fails, otherwise, it succeeds. </br></br>
-Whenever you get the expected code from the compiler, create a snapshot of it so it can be used as a test case for future changes to the compiled code. Snapshots must be updated as the expected code changes. 
+This project uses snapshot tests. This means that the output code of the compiler will be tested against its corresponding snapshot in the `./snapshots` folder. The snapshot is the expected code, and the compiled code is the actual code. If they do not match, the test fails, otherwise, it succeeds. </br></br>
+Whenever you get the expected code from the compiler, create a snapshot of it so it can be used as a test case for future changes to the compiler code. Snapshots must be updated as the expected code changes. 
 
 ### Creating a New Snapshot
 
