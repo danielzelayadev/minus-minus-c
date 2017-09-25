@@ -191,8 +191,8 @@ void newGlobal(string name) {
     globals[name] = ".global " + name + "\n";
 }
 
-int getSize(string id) {
-    int siz = callStack->getSizeOfVar(id);
+int getSize(string id, bool arr) {
+    int siz = callStack->getSizeOfVar(id + (arr ? "[0]" : ""));
     
     if (siz == -1)
         siz = getDataElementType(id) == BYTE ? 1 : 4;

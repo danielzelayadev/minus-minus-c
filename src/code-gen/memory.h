@@ -49,6 +49,6 @@ void freeTemp(int);
 int newSaved();
 void freeSaved(int);
 
-int getSize(string);
+int getSize(string, bool = false);
 
 #endif
