@@ -7,5 +7,5 @@ else
     if [ "$#" -gt 1 ]; then
         dst="$2"
     fi
-    ./bin/mmc "$1" "$2"
+    ./bin/mmc "$1" "$dst"
 fi
