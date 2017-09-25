@@ -11,7 +11,9 @@ public:
         this->arrExpr = arrExpr;
         this->accessExpr = accessExpr;
     }
+    int size();
     bool isAssignable() { return true; }
+    string genAddrCode(bool = false);
     string toString() {
         return arrExpr->toString() + "[" + accessExpr->toString() + "]";
     }

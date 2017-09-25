@@ -45,3 +45,7 @@ string IdExpression::genAddrCode(bool preserve) {
         code + addi(placeStr, "$fp", stackOffset) :
         code + la(placeStr, id);
 }
+
+int IdExpression::size() {
+    return getSize(id);
+}

@@ -8,6 +8,7 @@ public:
     string id;
 
     IdExpression(string id) { this->id = id; }
+    int size();
     bool isAssignable() { return true; }
     string genCode(bool = false);
     string genAddrCode(bool = false);
