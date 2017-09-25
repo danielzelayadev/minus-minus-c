@@ -14,6 +14,8 @@ map<string, DataElement> data;
 
 map<string, string> globals;
 
+extern Stack *callStack;
+
 void Stack::push(string id, int siz) {
     _stack->push_back(new StackData(id, siz));
 }
@@ -187,4 +189,13 @@ void freeSaved(int i) {
 
 void newGlobal(string name) {
     globals[name] = ".global " + name + "\n";
+}
+
+int getSize(string id) {
+    int siz = callStack->getSizeOfVar(id);
+    
+    if (siz == -1)
+        siz = getDataElementType(id) == BYTE ? 1 : 4;
+
+    return siz;
 }
