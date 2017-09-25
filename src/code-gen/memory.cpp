@@ -53,15 +53,15 @@ int Stack::getBaseOffset(string id) {
         offset += sd->siz;
     }
 
-    offset = 4;
+    offset = 0;
 
     for (int i = ebpPos - 1; i >=1; i--) {
         StackData *sd = (*_stack)[i];
         
-        if (sd->id == id)
-            return offset;
-            
         offset += sd->siz;
+
+        if (sd->id == id)
+            return offset;  
     }
 
     return 0;
