@@ -20,6 +20,7 @@ TARGET = bin/mmc
 .PHONY: clean
 
 build: $(TARGET)
+	./test.sh
 
 $(LEXER): $(FLEX_SRC)
 	flex -o $@ $<
