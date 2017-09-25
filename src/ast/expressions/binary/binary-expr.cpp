@@ -19,12 +19,15 @@ else if (!preserve && leftIsSaved) { \
 #define GENERIC_BINARY_CODEGEN(name, instr) \
 string name##Expression::genCode(bool preserve) { \
     string code; \
-    bool leftIsSaved = dynamic_cast<FunctionCall*>(right); \
+    bool leftIsSaved = dynamic_cast<FunctionCall*>(right) || \
+    dynamic_cast<MulExpression*>(right) || dynamic_cast<DivExpression*>(right) || \
+    dynamic_cast<ArrayAccess*>(right); \
     code += left->genCode(leftIsSaved); \
     code += right->genCode(); \
     GET_BINARY_PLACE() \
     code += string(instr) + " " + toRegStr(place, preserve ? 's' : 't') + ", " + \
     toRegStr(left->place, leftIsSaved ? 's' : 't') + ", " + toRegStr(right->place) + "\n"; \
+    if(!preserve && leftIsSaved) code += lreg(left->place, 's'); \
     freeTemp(right->place); \
     return code; \
 }
@@ -55,7 +58,9 @@ string AssignmentExpression::genCode(bool preserve) {
 
     GET_BINARY_PLACE()
 
-    code += sw(toRegStr(right->place), 0, toRegStr(left->place, 's'));
+    code += left->size() == 4 ? 
+        sw(toRegStr(right->place), 0, toRegStr(left->place, 's')) :
+        sb(toRegStr(right->place), 0, toRegStr(left->place, 's'));
 
     if (!preserve) code += lreg(left->place, 's');
 
