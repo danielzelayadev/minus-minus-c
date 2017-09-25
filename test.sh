@@ -1,6 +1,10 @@
 
 #!/bin/bash
 
+passing=0
+failing=0
+count=0
+
 test () {
     snapName=snapshots/$(basename -s .c "$1").s
     if [ -e "$snapName" ]; then
@@ -10,10 +14,13 @@ test () {
         output=$(diff cmp/actual.s cmp/expected.s)
         len=${#output}
         if [ $len -gt 0 ]; then
-            echo -e "\e[31m$1 test failed."
+            echo -e "\e[31m[FAILED]: $1"
+            failing=$((failing + 1))
         else
-            echo -e "\e[32m$1 test success."
+            echo -e "\e[32m[SUCCESS]: $1"
+            passing=$((passing + 1))
         fi
+        count=$((count + 1))
     fi
 }
 
@@ -26,3 +33,7 @@ else
     test "$1"
 fi
 rm -r cmp
+
+echo -e "\e[0m"
+echo "Passing $passing -- Failing $failing"
+echo "$count test(s) ran."
