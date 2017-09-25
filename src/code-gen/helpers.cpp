@@ -264,3 +264,37 @@ string releaseSaved(int place) {
     freeSaved(place);
     return lreg(place, 's');
 }
+
+string arrayAccessToStr(string id, int i) {
+    return id + "[" + to_string(i) + "]";
+}
+
+string allocArray(string id, int dims, int siz) {
+    string code;
+    int temp = newTemp();
+    string tempStr = toRegStr(temp);
+    
+    // Array Pointer
+    code += stackAlloc(4);
+    code += "addi " + tempStr + ", $sp, -" + to_string(siz) + "\n"; // Points to arr[0]
+    code += sw(tempStr, 0, "$sp");
+    freeTemp(temp);
+
+    // Actual Array
+    code += stackAlloc(siz * dims);
+
+    callStack->push(id, 4);
+
+    for (int i = 0; i < dims; i++)
+        callStack->push(arrayAccessToStr(id, i), siz);
+
+    return code;
+}
+
+string allocIntArray(string id, int dims) {
+    return allocArray(id, dims, 4);
+}
+
+string allocCharArray(string id, int dims) {
+    return allocArray(id, dims, 1);
+}

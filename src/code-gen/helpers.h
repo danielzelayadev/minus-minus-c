@@ -57,4 +57,7 @@ string lreg(int, char = 't');
 string useSaved(int*);
 string releaseSaved(int);
 
+string allocIntArray(string, int);
+string allocCharArray(string, int);
+
 #endif // !HELPERS
