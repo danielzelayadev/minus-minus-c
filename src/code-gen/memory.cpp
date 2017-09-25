@@ -104,17 +104,30 @@ string newString(string literal) {
     return label;
 }
 
-void newInt(string id) {
+string genArray(int siz) {
+    string arr;
+
+    while (siz > 1) {
+        arr += "0, ";
+        siz--;
+    }
+
+    if (siz) arr += "0";
+
+    return arr;
+}
+
+void newInt(string id, int howMany) {
     DataElement de = { 
-        id + ": .word 0", 
+        id + ": .word " + genArray(howMany), 
         WORD
     };
     data[id] = de;
 }
 
-void newChar(string id) {
+void newChar(string id, int howMany) {
     DataElement de = { 
-        id + ": .byte 0", 
+        id + ": .byte " + genArray(howMany), 
         BYTE 
     };
     data[id] = de;
