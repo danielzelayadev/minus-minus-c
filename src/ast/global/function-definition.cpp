@@ -7,6 +7,7 @@
 
 extern string globalInits;
 extern Stack *callStack;
+extern int currScope;
 
 int currParamCount;
 
@@ -27,6 +28,7 @@ string FunctionDefinition::genCode() {
     string childCode;
     FunctionDeclarator *decl = (FunctionDeclarator*)declarator;
 
+    currScope = 1;
     currParamCount = decl->params->size();
 
     code += decl->genCode();
@@ -44,7 +46,9 @@ string FunctionDefinition::genCode() {
 
     code += functionEpilogue(currParamCount);
 
+    callStack->popFrame();
     currParamCount = 0;
+    currScope = 0;
 
     return code;
 }

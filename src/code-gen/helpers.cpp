@@ -15,6 +15,8 @@ extern int currParamCount;
 
 extern Stack *callStack;
 
+extern int currScope;
+
 string newLabel(string prefix) {
     return prefix + "__" + to_string(LABEL_HASH).substr(0, 3);
 }
@@ -127,11 +129,8 @@ string dataSection(map<string, DataElement> *data) {
 string pushParams(vector<Parameter*> *params) {
     string code;
 
-    if (params->size()) {
-        code += "\n# Arg Pushing";
-        callStack->pushFrame();
-        code += prologue();
-    }
+    if (params->size())
+        code += "\n# Arg Pushing\n";
 
     for (int i = 0; i < params->size(); i++) {
         string reg = toRegStr(i, 'a');
@@ -148,6 +147,7 @@ string pushParams(vector<Parameter*> *params) {
 string pushReturnAddr() {
     string code;
 
+    callStack->push(REG_PREFIX+string("$ra"), 4);
     code += stackAlloc();
     code += sw("$ra", 0, "$sp");
 
@@ -157,8 +157,7 @@ string pushReturnAddr() {
 string popReturnAddr() {
     string code;
 
-    code += lw("$ra", 0, "$sp");
-    code += stackFree();
+    code += lw("$ra", -4, "$fp");
 
     return code;
 }
@@ -166,6 +165,8 @@ string popReturnAddr() {
 string functionPrologue(vector<Parameter*> *params) {
     string code;
 
+    callStack->pushFrame();
+    code += prologue();
     code += pushReturnAddr();
     code += pushParams(params);
 
@@ -175,12 +176,13 @@ string functionPrologue(vector<Parameter*> *params) {
 string functionEpilogue(bool pop) {
     string code;
 
-    if (pop) {
-        callStack->popFrame();
+    int csCopy = currScope;
+
+    while (csCopy-- > 1)
         code += epilogue();
-    }
 
     code += popReturnAddr();
+    code += epilogue();
 
     code += "\n";
 
@@ -198,7 +200,6 @@ string jr(Expression *expr) {
         freeTemp(expr->place);
     }
 
-    code += epilogue();
     code += functionEpilogue(currParamCount);
 
     return code;

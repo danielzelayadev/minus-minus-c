@@ -9,7 +9,7 @@ FunctionDeclarator::FunctionDeclarator(string id, vector<Parameter*>* params) : 
 string FunctionDeclarator::genCode() {
     string code;
 
-    code += id + ":\n\n";
+    code += "\n" + id + ":\n\n";
 
     newGlobal(id);
 

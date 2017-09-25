@@ -15,18 +15,16 @@ string CodeBlock::genCode() {
     code += prologue();
 
     for (int i = 0; i < declarations->size(); i++)
-        code += (*declarations)[i]->genCode();
+        code += (*declarations)[i]->genCode() + "\n";
 
     code += "\n";
     
     for (int i = 0; i < statements->size(); i++)
-        code += (*statements)[i]->genCode();
+        code += (*statements)[i]->genCode() + "\n"; 
 
     callStack->popFrame();
-
-    code += epilogue();
-
     currScope--;
+    code += epilogue();
 
     return code;
 }
