@@ -47,5 +47,5 @@ string IdExpression::genAddrCode(bool preserve) {
 }
 
 int IdExpression::size() {
-    return getSize(id);
+    return getSize(id, false);
 }
