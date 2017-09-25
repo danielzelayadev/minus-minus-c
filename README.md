@@ -7,7 +7,10 @@
 ### Prerequisites
 
 - linux
+- g++
 - make
+- flex
+- bison
 
 ### Build the Compiler
 
