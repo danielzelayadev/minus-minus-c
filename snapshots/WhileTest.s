@@ -34,8 +34,10 @@ addi $sp, $sp, -4
 sw $fp, 0($sp)
 move $fp, $sp
 
+# int total
 addi $sp, $sp, -4
 
+# int count
 addi $sp, $sp, -4
 
 
@@ -72,6 +74,7 @@ addi $sp, $sp, -4
 sw $fp, 0($sp)
 move $fp, $sp
 
+# int number
 addi $sp, $sp, -4
 
 

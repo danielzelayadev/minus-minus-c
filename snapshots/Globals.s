@@ -41,10 +41,10 @@ la $t0, f
 sw $t1, 0($t0)
 li $t1, 'U'
 la $t0, ce
-sw $t1, 0($t0)
+sb $t1, 0($t0)
 li $t1, '\n'
 la $t0, cf
-sw $t1, 0($t0)
+sb $t1, 0($t0)
 
 # screen setup
 li $a0, BRIGHT_WHITE

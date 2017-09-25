@@ -37,8 +37,11 @@ addi $sp, $sp, -4
 sw $fp, 0($sp)
 move $fp, $sp
 
+# int x
 addi $sp, $sp, -4
+# int y
 addi $sp, $sp, -4
+# int z
 addi $sp, $sp, -4
 
 

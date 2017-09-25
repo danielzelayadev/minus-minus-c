@@ -34,6 +34,7 @@ addi $sp, $sp, -4
 sw $fp, 0($sp)
 move $fp, $sp
 
+# int i
 addi $sp, $sp, -4
 
 
