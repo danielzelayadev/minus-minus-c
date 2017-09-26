@@ -34,6 +34,7 @@ obj/%.o: src/%.cpp
 	g++ -std=c++11 -w -g -c -o $@ $<
 
 $(TARGET): $(OBJ_FILES)
+	mkdir -p bin
 	g++ -std=c++11 -w -g -o $@ $^
 
 clean:
