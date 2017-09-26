@@ -1,31 +1,26 @@
-CPP_SRC = $(PARSER) $(LEXER) src/main.cpp src/ast.cpp src/expr.cpp src/unary-expr.cpp src/binary-expr.cpp src/primary-expr.cpp src/postfix-expr.cpp src/statements.cpp
+CPP_SRC = $(PARSER) $(LEXER) $(shell find . -name "*.cpp" -not -path "./src/flexson/*")
 
-ENTRY = samples/test.c
-OUTPUT = samples/out.c
+LEXER = src/flexson/lexer.cpp
+PARSER = src/flexson/parser.cpp
 
-LEXER = src/lexer.cpp
-PARSER = src/parser.cpp
-
-TOKENS = src/tokens.h
+TOKENS = src/flexson/tokens.h
 
 REPORT = debug/state.txt
 
-FLEX_SRC = src/tokens.l
+FLEX_SRC = src/flexson/tokens.l
 
-BISON_SRC = src/grammar.y
+BISON_SRC = src/flexson/grammar.y
 
-OBJ_FILES = ${CPP_SRC:src/%.cpp=obj/%.o}
+OBJ_FILES = $(patsubst ./src/%.cpp, obj/%.o, $(CPP_SRC))
+
+CXXFLAGS=-std=c++11
 
 TARGET = bin/mmc
 
 .PHONY: clean
 
-all: run
-
 build: $(TARGET)
-
-run: $(TARGET)
-	./$(TARGET) $(ENTRY) > $(OUTPUT)
+	./test.sh
 
 $(LEXER): $(FLEX_SRC)
 	flex -o $@ $<
@@ -35,12 +30,13 @@ $(PARSER): $(BISON_SRC)
 	bison --defines=$(TOKENS) -v --report-file=$(REPORT) -o $@ $<
 
 obj/%.o: src/%.cpp
-	mkdir -p obj
-	g++ -w -g -c -o $@ $<
+	mkdir -p $(@D)
+	g++ -std=c++11 -w -g -c -o $@ $<
 
 $(TARGET): $(OBJ_FILES)
-	g++ -w -g -o $@ $^
+	g++ -std=c++11 -w -g -o $@ $^
 
 clean:
+	rm -rf obj/**/
 	rm -f bin/* obj/* debug/*
 	rm -f $(LEXER) $(PARSER) $(TOKENS) $(OUTPUT)

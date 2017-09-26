@@ -1,31 +1,76 @@
 #include <iostream>
+#include <fstream>
 #include <stdio.h>
-#include "ast.h"
+#include "ast/ast.h"
+#include "semantic/context.h"
+#include "semantic/errors.h"
+#include "code-gen/memory.h"
 
 using namespace std;
+
+Context *ctx;
+VarTable *varTable;
+FunctionTable *functTable;
+
+string globalInits;
+
+extern map<string, string> globals;
+
+Stack *callStack;
+int currScope;
 
 extern CompilationUnit* ast;
 
 extern FILE* yyin;
+
 int yyparse();
 
-int main(int argc, char **argv) {
+int fileNotFoundErr(char *file) {
+    printf("File '%s' not found.\n", file);
+    return 1;
+}
 
-    if (argc != 2) {
-        printf("Usage: %s [FILE]\n", argv[0]);
+int main(int argc, char **argv) {
+    if (argc != 3) {
+        printf("Usage: %s [ENTRY] [OUTPUT]\n", argv[0]);
         return 1;
     }
 
     yyin = fopen(argv[1], "r");
 
-    if (!yyin) {
-        printf("File '%s' not found.\n", argv[1]);
-        return 1;
-    }
+    if (!yyin)
+        return fileNotFoundErr(argv[1]);
+
+    cout << "Beginning compilation...\n";
 
     yyparse();
 
-    cout << ast->toString() << endl;
+    if (!ast) {
+        cout << "Something went wrong while parsing.\n";
+        return 1;
+    }
+
+    ctx = new Context(&varTable);
+
+    functTable = new FunctionTable();
+
+    ast->checkSemantic();
+
+    if (finishedWithErrors())
+        printErrors();
+    else {
+        ofstream outputFile(argv[2]);
+
+        callStack = new Stack();
+        
+        outputFile << ast->genCode() << endl;
+
+        delete callStack;
+        
+        outputFile.close();
+
+        cout << "Compiled successfully.\n";
+    }
 
     return 0;
 }
