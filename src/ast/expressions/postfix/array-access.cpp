@@ -11,7 +11,7 @@ string ArrayAccess::genCode(bool preserve) {
 
     code += genAddrCode(preserve);
     placeStr = toRegStr(place, preserve ? 's' : 't');
-    code += lw(placeStr, 0, placeStr);
+    code += size() == 4 ? lw( placeStr, 0, placeStr) : lb( placeStr, 0, placeStr);
 
     return code;
 }

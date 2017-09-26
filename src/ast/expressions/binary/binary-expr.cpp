@@ -72,11 +72,45 @@ string AssignmentExpression::genCode(bool preserve) {
 }
 
 string CondAndExpression::genCode(bool preserve) {
-    return "";
+    string code;
+
+    code += left->genCode();
+    code += right->genCode();
+
+    if (preserve)
+        code += useSaved(&place);
+    else
+        place = left->place;
+
+    string placeStr = toRegStr(place, preserve ? 's' : 't'); 
+    code += "and " + placeStr + ", " + toRegStr(left->place) + ", " + toRegStr(right->place) + "\n"; 
+    code += "sne " + placeStr + ", " + placeStr + ", $zero\n";
+
+    if (preserve) freeTemp(left->place); 
+    freeTemp(right->place);
+
+    return code;
 }
 
 string CondOrExpression::genCode(bool preserve) {
-    return "";
+    string code;
+    
+        code += left->genCode();
+        code += right->genCode();
+    
+        if (preserve)
+            code += useSaved(&place);
+        else
+            place = left->place;
+    
+        string placeStr = toRegStr(place, preserve ? 's' : 't'); 
+        code += "or " + placeStr + ", " + toRegStr(left->place) + ", " + toRegStr(right->place) + "\n"; 
+        code += "sne " + placeStr + ", " + placeStr + ", $zero\n";
+    
+        if (preserve) freeTemp(left->place); 
+        freeTemp(right->place);
+    
+        return code;
 }
 
 GENERIC_BINARY_CODEGEN(Or, "or")

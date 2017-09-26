@@ -135,7 +135,8 @@ string pushParams(vector<Parameter*> *params) {
     for (int i = 0; i < params->size(); i++) {
         string reg = toRegStr(i, 'a');
         Parameter *param = (*params)[i];
-        int siz = param->dataType == CHAR ? 1 : 4;
+        bool isByte = param->dataType == CHAR && !(dynamic_cast<ArrayDeclarator*>(param->declarator));
+        int siz = isByte ? 1 : 4;
         callStack->push(param->declarator->id, siz);
         code += stackAlloc(siz);
         code += siz == 4 ? sw(reg, 0, "$sp") : sb(reg, 0, "$sp");
@@ -276,7 +277,7 @@ string allocArray(string id, int dims, int siz) {
     
     // Array Pointer
     code += stackAlloc(4);
-    code += "addi " + tempStr + ", $sp, -" + to_string(siz) + "\n"; // Points to arr[0]
+    code += "addi " + tempStr + ", $sp, -4\n"; // Points to arr[0]
     code += sw(tempStr, 0, "$sp");
     freeTemp(temp);
 
